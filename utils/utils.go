@@ -19,13 +19,18 @@ func rootPath() (string, error) {
 }
 
 // InputFile returns the path of the input file
-func InputFile(day, year string) (string, error) {
+func InputFile(day, year string, example bool) (string, error) {
 	root, err := rootPath()
 	if err != nil {
 		return "", err
 	}
 
-	fp := path.Join(root, year, "input", fmt.Sprintf("%s.txt", day))
+	var fn = fmt.Sprintf("%s.txt", day)
+	if example {
+		fn = fmt.Sprintf("%s.example.txt", day)
+	}
+
+	fp := path.Join(root, year, "input", fn)
 	if _, err := os.Stat(fp); err != nil {
 		return "", fmt.Errorf("%s does not exist", fp)
 	}

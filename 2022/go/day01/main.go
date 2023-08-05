@@ -34,8 +34,9 @@ func max(sl []int64) int64 {
 func main() {
 	day := "01"
 	year := "2022"
+	useExample := false
 
-	inputFile, err := utils.InputFile(day, year)
+	inputFile, err := utils.InputFile(day, year, useExample)
 	if err != nil {
 		panic(err)
 	}

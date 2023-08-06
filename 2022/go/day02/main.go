@@ -34,12 +34,14 @@ var myResult = map[string]string{
 	"Z": "win",
 }
 
+// opponents shape mapped to my winning shape
 var winningShape = map[string]string{
 	"rock":     "paper",
 	"paper":    "scissors",
 	"scissors": "rock",
 }
 
+// opponents shape mapped to my losing shape
 var losingShape = map[string]string{
 	"rock":     "scissors",
 	"paper":    "rock",
@@ -59,7 +61,7 @@ func gameResult(opp, me string) string {
 	return "win"
 }
 
-// myShape will return my shape bases on the the opponents shape and my expected result
+// myShape will return my shape based on the the opponents shape and my expected result
 func myShape(opp, res string) string {
 	if res == "draw" {
 		return opp

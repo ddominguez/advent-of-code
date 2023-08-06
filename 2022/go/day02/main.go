@@ -34,15 +34,25 @@ var myResult = map[string]string{
 	"Z": "win",
 }
 
+var winningShape = map[string]string{
+	"rock":     "paper",
+	"paper":    "scissors",
+	"scissors": "rock",
+}
+
+var losingShape = map[string]string{
+	"rock":     "scissors",
+	"paper":    "rock",
+	"scissors": "paper",
+}
+
 // gameResult will return my result in the game
 func gameResult(opp, me string) string {
 	if opp == me {
 		return "draw"
 	}
 
-	if me == "rock" && opp == "paper" ||
-		me == "paper" && opp == "scissors" ||
-		me == "scissors" && opp == "rock" {
+	if losingShape[opp] == me {
 		return "loss"
 	}
 
@@ -56,27 +66,11 @@ func myShape(opp, res string) string {
 	}
 
 	if res == "win" {
-		if opp == "rock" {
-			return "paper"
-		}
-		if opp == "paper" {
-			return "scissors"
-		}
-		if opp == "scissors" {
-			return "rock"
-		}
+		return winningShape[opp]
 	}
 
 	if res == "loss" {
-		if opp == "rock" {
-			return "scissors"
-		}
-		if opp == "paper" {
-			return "rock"
-		}
-		if opp == "scissors" {
-			return "paper"
-		}
+		return losingShape[opp]
 	}
 
 	return ""

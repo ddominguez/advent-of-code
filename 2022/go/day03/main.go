@@ -7,7 +7,7 @@ import (
 	"github.com/ddominguez/advent-of-code/utils"
 )
 
-const letters = "abcdefghijklmnopqrstuvwxyz"
+const letters string = "abcdefghijklmnopqrstuvwxyz"
 
 var priorities = make(map[string]int)
 

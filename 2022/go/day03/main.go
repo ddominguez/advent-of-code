@@ -68,11 +68,11 @@ func main() {
 		groupSacks = append(groupSacks, lines[i])
 		if len(groupSacks) == 3 {
 			s1items := strToMap(groupSacks[0])
-            s2items := make(map[string]int)
+			s2items := make(map[string]int)
 			for i := range groupSacks[1] {
 				s := fmt.Sprintf("%c", groupSacks[1][i])
 				if _, ok := s1items[s]; ok {
-                    s2items[s] = 1
+					s2items[s] = 1
 				}
 			}
 			var badge string

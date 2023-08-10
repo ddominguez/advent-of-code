@@ -20,16 +20,14 @@ func strToMap(items string) map[string]int {
 }
 
 func main() {
-	day := "03"
-	year := "2022"
-	useExample := false
+	var pt1Ans int
+	var pt2Ans int
 
-	inputFile, err := utils.InputFile(day, year, useExample)
-	if err != nil {
-		panic(err)
-	}
-
-	data, err := utils.InputData(inputFile)
+	data, err := utils.InputData(utils.Puzzle{
+		Day:        "03",
+		Year:       "2022",
+		UseExample: false,
+	})
 	if err != nil {
 		panic(err)
 	}
@@ -41,9 +39,6 @@ func main() {
 		priorities[l] = i + 1
 		priorities[strings.ToUpper(l)] = i + 27
 	}
-
-	var pt1Sum int
-	var pt2Sum int
 
 	var groupSacks []string = nil
 
@@ -62,7 +57,7 @@ func main() {
 			}
 		}
 
-		pt1Sum += priorities[commonItem]
+		pt1Ans += priorities[commonItem]
 
 		// part 2
 		groupSacks = append(groupSacks, lines[i])
@@ -82,13 +77,13 @@ func main() {
 					break
 				}
 			}
-			pt2Sum += priorities[badge]
+			pt2Ans += priorities[badge]
 
 			// clear it
 			groupSacks = nil
 		}
 	}
 
-	fmt.Println("Part 1: ", pt1Sum)
-	fmt.Println("Part 2: ", pt2Sum)
+	fmt.Println("Part 1: ", pt1Ans)
+	fmt.Println("Part 2: ", pt2Ans)
 }

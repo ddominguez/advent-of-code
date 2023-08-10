@@ -32,16 +32,11 @@ func max(sl []int64) int64 {
 }
 
 func main() {
-	day := "01"
-	year := "2022"
-	useExample := false
-
-	inputFile, err := utils.InputFile(day, year, useExample)
-	if err != nil {
-		panic(err)
-	}
-
-	data, err := utils.InputData(inputFile)
+	data, err := utils.InputData(utils.Puzzle{
+		Day:        "01",
+		Year:       "2022",
+		UseExample: false,
+	})
 	if err != nil {
 		panic(err)
 	}

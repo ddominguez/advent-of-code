@@ -16,13 +16,13 @@ var shapes = map[string]string{
 	"Z": "scissors",
 }
 
-var shapePoints = map[string]uint64{
+var shapePoints = map[string]int{
 	"rock":     1,
 	"paper":    2,
 	"scissors": 3,
 }
 
-var outcomePoints = map[string]uint64{
+var outcomePoints = map[string]int{
 	"loss": 0,
 	"draw": 3,
 	"win":  6,
@@ -79,39 +79,35 @@ func myShape(opp, res string) string {
 }
 
 func main() {
-	day := "02"
-	year := "2022"
-	useExample := false
+	var pt1Ans int
+	var pt2Ans int
 
-	inputFile, err := utils.InputFile(day, year, useExample)
-	if err != nil {
-		panic(err)
-	}
-
-	data, err := utils.InputData(inputFile)
+	data, err := utils.InputData(utils.Puzzle{
+		Day:        "02",
+		Year:       "2022",
+		UseExample: false,
+	})
 	if err != nil {
 		panic(err)
 	}
 
 	split := strings.Split(data, "\n")
 
-	var pt1Score uint64
-	var pt2Score uint64
 	for i := range split {
 		gameSh := strings.Split(split[i], " ")
 		opp := gameSh[0]
 		me := gameSh[1]
 
 		pt1Res := gameResult(shapes[opp], shapes[me])
-		pt1Score += outcomePoints[pt1Res] + shapePoints[shapes[me]]
+		pt1Ans += outcomePoints[pt1Res] + shapePoints[shapes[me]]
 
 		mySh := myShape(shapes[opp], myResult[me])
 		if mySh == "" {
 			panic("could not get my game shape")
 		}
-		pt2Score += outcomePoints[myResult[me]] + shapePoints[mySh]
+		pt2Ans += outcomePoints[myResult[me]] + shapePoints[mySh]
 	}
 
-	fmt.Println("Part 1: ", pt1Score)
-	fmt.Println("Part 2: ", pt2Score)
+	fmt.Println("Part 1: ", pt1Ans)
+	fmt.Println("Part 2: ", pt2Ans)
 }

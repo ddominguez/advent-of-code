@@ -24,19 +24,14 @@ func parsedSection(str string) []int {
 }
 
 func main() {
-	day := "04"
-	year := "2022"
-	useExample := false
-
 	var pt1Ans int
 	var pt2Ans int
 
-	inputFile, err := utils.InputFile(day, year, useExample)
-	if err != nil {
-		panic(err)
-	}
-
-	data, err := utils.InputData(inputFile)
+	data, err := utils.InputData(utils.Puzzle{
+		Day:        "04",
+		Year:       "2022",
+		UseExample: false,
+	})
 	if err != nil {
 		panic(err)
 	}

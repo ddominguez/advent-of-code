@@ -42,22 +42,15 @@ func main() {
 		p1Section := parsedSection(pair[0])
 		p2Section := parsedSection(pair[1])
 
-		p1SecDiff := p1Section[1] - p1Section[0]
-		p2SecDiff := p2Section[1] - p2Section[0]
-
 		// Part 1
-		if p1SecDiff >= p2SecDiff &&
-			p2Section[0] >= p1Section[0] && p2Section[1] <= p1Section[1] {
-			pt1Ans += 1
-		} else if p2SecDiff > p1SecDiff &&
-			p1Section[0] >= p2Section[0] && p1Section[1] <= p2Section[1] {
+		if (p2Section[0] >= p1Section[0] && p2Section[1] <= p1Section[1]) ||
+			(p1Section[0] >= p2Section[0] && p1Section[1] <= p2Section[1]) {
 			pt1Ans += 1
 		}
 
 		// Part 2
-		if p2Section[1] >= p1Section[1] && p1Section[1] >= p2Section[0] {
-			pt2Ans += 1
-		} else if p1Section[1] >= p2Section[1] && p2Section[1] >= p1Section[0] {
+		if (p2Section[1] >= p1Section[1] && p1Section[1] >= p2Section[0]) ||
+			(p1Section[1] >= p2Section[1] && p2Section[1] >= p1Section[0]) {
 			pt2Ans += 1
 		}
 	}

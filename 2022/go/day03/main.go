@@ -32,7 +32,7 @@ func main() {
 		panic(err)
 	}
 
-	lines := strings.Split(data, "\n")
+	lines := strings.Split(strings.TrimSpace(data), "\n")
 
 	for i := range letters {
 		l := fmt.Sprintf("%c", letters[i])

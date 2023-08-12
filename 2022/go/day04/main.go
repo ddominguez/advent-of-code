@@ -33,7 +33,7 @@ func main() {
 		panic(err)
 	}
 
-	lines := strings.Split(data, "\n")
+	lines := strings.Split(strings.TrimSpace(data), "\n")
 	for i := range lines {
 		pair := strings.Split(lines[i], ",")
 		p1Section := parsedSection(pair[0])

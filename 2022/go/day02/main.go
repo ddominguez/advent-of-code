@@ -91,7 +91,7 @@ func main() {
 		panic(err)
 	}
 
-	split := strings.Split(data, "\n")
+	split := strings.Split(strings.TrimSpace(data), "\n")
 
 	for i := range split {
 		gameSh := strings.Split(split[i], " ")

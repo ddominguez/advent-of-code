@@ -55,18 +55,6 @@ func InputData(p Puzzle) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return strings.TrimSpace(string(dat)), nil
-}
-
-func InputDataNoTrim(p Puzzle) (string, error) {
-	filePath, err := p.inputFile()
-	if err != nil {
-		return "", err
-	}
-	dat, err := os.ReadFile(filePath)
-	if err != nil {
-		return "", err
-	}
 	return string(dat), nil
 }
 

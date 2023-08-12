@@ -41,7 +41,7 @@ func main() {
 		panic(err)
 	}
 
-	split := strings.Split(data, "\n\n")
+	split := strings.Split(strings.TrimSpace(data), "\n\n")
 
 	calories := make([]int64, len(split))
 

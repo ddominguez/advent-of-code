@@ -10,7 +10,7 @@ import (
 func main() {
 	var result string
 
-	data, err := utils.InputDataNoTrim(utils.Puzzle{
+	data, err := utils.InputData(utils.Puzzle{
 		Day:        "05",
 		Year:       "2022",
 		UseExample: false,

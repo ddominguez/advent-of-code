@@ -2,19 +2,10 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 
 	"github.com/ddominguez/advent-of-code/utils"
 )
-
-func strToInt(str string) int {
-	v, err := strconv.Atoi(str)
-	if err != nil {
-		panic(err)
-	}
-	return v
-}
 
 func main() {
 	var result string
@@ -50,9 +41,18 @@ func main() {
 
 	for _, p := range strings.Split(strings.TrimSpace(procedures), "\n") {
 		splitProc := strings.Split(p, " ")
-		move := strToInt(splitProc[1])
-		from := strToInt(splitProc[3])
-		to := strToInt(splitProc[5])
+		move, err := utils.StrToInt(splitProc[1])
+		if err != nil {
+			panic(err)
+		}
+		from, err := utils.StrToInt(splitProc[3])
+		if err != nil {
+			panic(err)
+		}
+		to, err := utils.StrToInt(splitProc[5])
+		if err != nil {
+			panic(err)
+		}
 
 		moving := stackMap[from][len(stackMap[from])-move : len(stackMap[from])]
 

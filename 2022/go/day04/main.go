@@ -2,24 +2,21 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 
 	"github.com/ddominguez/advent-of-code/utils"
 )
 
-func strToInt(str string) int {
-	v, err := strconv.Atoi(str)
+func parsedSection(str string) []int {
+	section := strings.Split(str, "-")
+	start, err := utils.StrToInt(section[0])
 	if err != nil {
 		panic(err)
 	}
-	return v
-}
-
-func parsedSection(str string) []int {
-	section := strings.Split(str, "-")
-	start := strToInt(section[0])
-	end := strToInt(section[1])
+	end, err := utils.StrToInt(section[1])
+	if err != nil {
+		panic(err)
+	}
 	return []int{start, end}
 }
 

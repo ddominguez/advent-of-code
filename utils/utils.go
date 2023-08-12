@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"strconv"
 	"strings"
 )
 
@@ -67,4 +68,13 @@ func InputDataNoTrim(p Puzzle) (string, error) {
 		return "", err
 	}
 	return string(dat), nil
+}
+
+// StrToInt converts a string to an str
+func StrToInt(str string) (int, error) {
+	v, err := strconv.Atoi(str)
+	if err != nil {
+		return -1, err
+	}
+	return v, nil
 }

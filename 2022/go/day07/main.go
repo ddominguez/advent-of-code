@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"sort"
 	"strings"
 
 	"github.com/ddominguez/advent-of-code/utils"
@@ -19,7 +18,7 @@ func main() {
 	data, err := utils.InputData(utils.Puzzle{
 		Day:        "07",
 		Year:       "2022",
-		UseExample: true,
+		UseExample: false,
 	})
 	if err != nil {
 		panic(err)
@@ -52,23 +51,17 @@ func main() {
 
 	unusedLimit := 30000000
 	unusedSpace := 70000000 - dirSizes["/"]
-	var sizeValues []int
 
 	for key := range dirSizes {
 		if dirSizes[key] <= 100000 {
 			part1 += dirSizes[key]
 		}
-		sizeValues = append(sizeValues, dirSizes[key])
-	}
 
-	sort.Slice(sizeValues, func(i, j int) bool { return sizeValues[i] < sizeValues[j] })
-	for i := range sizeValues {
-		if (unusedSpace + sizeValues[i]) >= unusedLimit {
-			part2 = sizeValues[i]
-			break
+		if unusedSpace+dirSizes[key] >= unusedLimit && (part2 == 0 || part2 > dirSizes[key]) {
+			part2 = dirSizes[key]
 		}
 	}
 
-    fmt.Println("Part 1:", part1)
-    fmt.Println("Part 2:", part2)
+	fmt.Println("Part 1:", part1)
+	fmt.Println("Part 2:", part2)
 }

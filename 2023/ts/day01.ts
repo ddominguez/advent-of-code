@@ -30,8 +30,7 @@ readFile(`${rootDir}/2023/input/01.txt`, "utf-8", (err, data) => {
       const found: string[] = [];
       let start = 0;
       line.split("").forEach((char, i) => {
-        const d = parseInt(char);
-        if (d) {
+        if (parseInt(char)) {
           found.push(char);
           start = i;
           return;

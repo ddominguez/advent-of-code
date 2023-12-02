@@ -40,14 +40,13 @@ readFile(`${rootDir}/2023/input/01.txt`, "utf-8", (err, data) => {
         // part 2
         const wordSubstr = line.substring(start, i + 1);
         if (wordSubstr.length < 3) return;
-        Array.from(numbers.keys()).forEach((w) => {
-          if (wordSubstr.includes(w)) {
-            const foundWord = numbers.get(w);
-            if (foundWord) found.push(foundWord);
+        for (const [k, v] of numbers.entries()) {
+          if (wordSubstr.includes(k) && numbers.has(k)) {
+            found.push(v);
             start = i;
             return;
           }
-        });
+        }
       });
       result += parseInt(found[0] + found[found.length - 1]);
     });

@@ -1,14 +1,11 @@
 {
   "name": "advent-of-code",
-  "version": "1.0.0",
-  "description": "advent of code solutions",
-  "main": "index.js",
-  "scripts": {
-    "build": "rm -rf ./dist; tsc --outDir ./dist"
-  },
-  "author": "",
+  "module": "index.ts",
+  "type": "module",
   "devDependencies": {
-    "@types/node": "^20.10.1",
-    "typescript": "^5.3.2"
+    "bun-types": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "5.0.0"
   }
 }

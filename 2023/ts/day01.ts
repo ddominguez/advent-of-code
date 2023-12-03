@@ -1,5 +1,4 @@
 import { readFile } from "node:fs";
-import { dirname } from "node:path";
 
 const rootDir = process.cwd();
 

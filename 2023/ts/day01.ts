@@ -33,7 +33,6 @@ readFile(`${rootDir}/2023/input/01.txt`, "utf-8", (err, data) => {
       line.split("").forEach((char, i) => {
         if (parseInt(char)) {
           found.push(char);
-          start = i;
         }
 
         if (!isPart1) {

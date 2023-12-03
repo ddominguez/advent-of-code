@@ -21,6 +21,7 @@ readFile(`${rootDir}/2023/input/01.txt`, "utf-8", (err, data) => {
     return;
   }
 
+  const isPart1 = true;
   let result = 0;
 
   data
@@ -33,22 +34,21 @@ readFile(`${rootDir}/2023/input/01.txt`, "utf-8", (err, data) => {
         if (parseInt(char)) {
           found.push(char);
           start = i;
-          return;
         }
 
-        // part 2
-        const wordSubstr = line.substring(start, i + 1);
-        if (wordSubstr.length < 3) return;
-        for (const [k, v] of numbers.entries()) {
-          if (wordSubstr.includes(k) && numbers.has(k)) {
-            found.push(v);
-            start = i;
-            return;
+        if (!isPart1) {
+          const wordSubstr = line.substring(start, i + 1);
+          if (wordSubstr.length < 3) return;
+          for (const [k, v] of numbers.entries()) {
+            if (wordSubstr.includes(k) && numbers.has(k)) {
+              found.push(v);
+              start = i;
+            }
           }
         }
       });
       result += parseInt(found[0] + found[found.length - 1]);
     });
 
-  console.log("result:", result);
+  console.log(`part ${isPart1 ? 1 : 2} result:`, result);
 });

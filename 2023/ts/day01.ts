@@ -1,5 +1,5 @@
 import { readFile } from "node:fs";
-import { rootPath } from "../../utils/utils.ts";
+import { rootPath } from "@utils";
 
 
 const numbers = new Map([

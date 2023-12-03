@@ -54,8 +54,10 @@ readFile(`${rootDir}/2023/input/02.txt`, "utf-8", (err, data) => {
       if (isPart1 && isPossible) {
         result += parseInt(game.replace(/\D/g, ""));
       } else if (!isPart1) {
-        const [c1, c2, c3] = Array.from(minColorCount.values());
-        result += c1 * c2 * c3;
+        result += Array.from(minColorCount.values()).reduce(
+          (acc, curr) => acc * curr,
+          1,
+        );
       }
     });
 

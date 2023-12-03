@@ -1,6 +1,6 @@
 import { readFile } from "node:fs";
+import { rootPath } from "../../utils/utils.ts";
 
-const rootDir = process.cwd();
 
 const numbers = new Map([
   ["one", "1"],
@@ -14,7 +14,7 @@ const numbers = new Map([
   ["nine", "9"],
 ]);
 
-readFile(`${rootDir}/2023/input/01.txt`, "utf-8", (err, data) => {
+readFile(`${rootPath}/2023/input/01.txt`, "utf-8", (err, data) => {
   if (err) {
     console.log(err);
     return;

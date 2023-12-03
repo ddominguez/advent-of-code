@@ -1,8 +1,7 @@
 import { readFile } from "node:fs";
+import { rootPath } from "../../utils/utils.ts";
 
-const rootDir = process.cwd();
-
-readFile(`${rootDir}/2023/input/02.txt`, "utf-8", (err, data) => {
+readFile(`${rootPath}/2023/input/02.txt`, "utf-8", (err, data) => {
   if (err) {
     console.log(err);
     return;

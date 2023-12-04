@@ -55,8 +55,6 @@ readFile(`${rootPath}/2023/input/03.txt`, "utf-8", (err, data) => {
     });
 
   numPositions.map((np, row) => {
-    const adj = [];
-    if (np.length < 1) return;
     np.forEach((n) => {
       let isAdjacent = false;
       const updatedPos = [n.pos[0] - 1, ...n.pos, n.pos[n.pos.length - 1] + 1];

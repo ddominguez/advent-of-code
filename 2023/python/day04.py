@@ -5,8 +5,21 @@ with open(f"{root_path}/2023/input/04.txt", encoding="utf-8") as f:
     data = f.read().strip()
 
 pt1_result = 0
+card_winners: dict[int, int] = {}
+card_processed: dict[int, int] = {}
+
+
+def process_card(card: int, cards: list[int]):
+    if card_winners[card] < 1:
+        return
+    for c in cards:
+        process_card(c, [x for x in range(c + 1, c + 1 + card_winners[c])])
+        card_processed[c] += 1
+
+
 for line in data.split("\n"):
     card, res = line.split(": ")
+    card_num = int(card.split()[1])
     left_nums, right_nums = res.split(" | ")
     l_list = [int(x) for x in left_nums.split(" ") if x]
     r_list = [int(x) for x in right_nums.split(" ") if x]
@@ -16,4 +29,16 @@ for line in data.split("\n"):
         points = points + 1 if i == 0 else points * 2
     pt1_result += points
 
+    card_winners[card_num] = len(winners)
+    card_processed[card_num] = card_processed.get(card_num, 0) + 1
+
 print(f"part 1: {pt1_result}")
+
+
+# part 2
+for card_num, win_count in card_winners.items():
+    if win_count < 1:
+        continue
+    process_card(card_num, [x for x in range(card_num + 1, card_num + 1 + win_count)])
+
+print(f"part 2: {sum(card_processed.values())}")

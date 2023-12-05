@@ -9,11 +9,11 @@ card_winners: dict[int, int] = {}
 card_processed: dict[int, int] = {}
 
 
-def process_card(card: int, cards: list[int]):
+def process_card(card: int):
     if card_winners[card] < 1:
         return
-    for c in cards:
-        process_card(c, [x for x in range(c + 1, c + 1 + card_winners[c])])
+    for c in range(card + 1, card + 1 + card_winners[card]):
+        process_card(c)
         card_processed[c] += 1
 
 
@@ -39,6 +39,6 @@ print(f"part 1: {pt1_result}")
 for card_num, win_count in card_winners.items():
     if win_count < 1:
         continue
-    process_card(card_num, [x for x in range(card_num + 1, card_num + 1 + win_count)])
+    process_card(card_num)
 
 print(f"part 2: {sum(card_processed.values())}")

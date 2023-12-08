@@ -1,5 +1,4 @@
 import os
-from dataclasses import dataclass
 from collections import Counter
 from functools import cmp_to_key
 
@@ -7,7 +6,11 @@ root_path = os.popen("git rev-parse --show-toplevel").read().strip()
 with open(f"{root_path}/2023/input/07.txt", encoding="utf-8") as f:
     lines = f.read().strip().split("\n")
 
-cards = ("2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A")
+isPart2 = True
+if isPart2:
+    cards = ("J", "2", "3", "4", "5", "6", "7", "8", "9", "T", "Q", "K", "A")
+else:
+    cards = ("2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A")
 
 
 def hand_sorter(a, b):
@@ -34,18 +37,27 @@ for line in lines:
     hand_bids[h] = int(b)
     c = Counter(h)
     cl = len(c)
+    mc = c.most_common()
+    fmc = mc[0][1]
+    jokers = list(filter(lambda tpl: tpl[0] == "J", mc))
+    if isPart2 and cl > 1 and len(jokers) > 0:
+        cl -= 1
+        if mc[0][0] == "J":
+            fmc = mc[1][1] + jokers[0][1]
+        else:
+            fmc = fmc + jokers[0][1]
+
     if cl == 1:
-        hand_type_collection["5k"].append(h)
+        k = "5k"
     elif cl == 2:
-        mc = c.most_common(1)[0][1]
-        hand_type_collection["4k" if mc == 4 else "fh"].append(h)
+        k = "4k" if fmc == 4 else "fh"
     elif cl == 3:
-        mc = c.most_common(1)[0][1]
-        hand_type_collection["3k" if mc == 3 else "2p"].append(h)
+        k = "3k" if fmc == 3 else "2p"
     elif cl == 4:
-        hand_type_collection["1p"].append(h)
+        k = "1p"
     else:
-        hand_type_collection["hc"].append(h)
+        k = "hc"
+    hand_type_collection[k].append(h)
 
 total_winnings = 0
 hand_rank = 0
@@ -55,4 +67,4 @@ for k, coll in hand_type_collection.items():
         hand_rank += 1
         total_winnings += hand_bids[h] * hand_rank
 
-print("part 1:", total_winnings)
+print(f"part {2 if isPart2 else 1}:", total_winnings)

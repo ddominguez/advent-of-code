@@ -19,12 +19,11 @@ pub fn main() {
 }
 
 pub fn part1(input: String) -> Int {
-  string.split(input, "\n") |> list.fold(0, nice_string_count)
-}
-
-fn nice_string_count(count: Int, line: String) -> Int {
-  let line_is_nice = is_nice(string.to_graphemes(line), 0, 0, 0)
-  increment(count, when: line_is_nice)
+  string.split(input, "\n")
+  |> list.fold(0, fn(count, line) {
+    let line_is_nice = is_nice(string.to_graphemes(line), 0, 0, 0)
+    increment(count, when: line_is_nice)
+  })
 }
 
 fn increment(value: Int, when predicate: Bool) {
@@ -62,6 +61,25 @@ fn is_nice(
   }
 }
 
-pub fn part2(_input: String) -> Int {
-  -100
+pub fn part2(input: String) -> Int {
+  string.split(input, "\n")
+  |> list.fold(0, fn(count, line) {
+    let line_is_nice = is_nice_too(string.to_graphemes(line), 0, 0)
+    increment(count, when: line_is_nice)
+  })
+}
+
+fn is_nice_too(chars: List(String), pairs: Int, repeats: Int) -> Bool {
+  case chars {
+    [] -> pairs > 0 && repeats > 0
+    [_] | [_, _] -> is_nice_too([], pairs, repeats)
+    [a, b, c, ..rest] -> {
+      let pairs_exist = string.join([c, ..rest], "") |> string.contains(a <> b)
+      is_nice_too(
+        [b, c, ..rest],
+        increment(pairs, when: pairs_exist),
+        increment(repeats, when: a == c),
+      )
+    }
+  }
 }

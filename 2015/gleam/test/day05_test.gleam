@@ -15,3 +15,25 @@ dvszwmarrgswjxmb
 
   day05.part1(input) |> should.equal(2)
 }
+
+pub fn part2_test() {
+  let input =
+    "
+aaaa
+aaa
+"
+    |> string.trim()
+
+  day05.part2(input) |> should.equal(1)
+
+  let input =
+    "
+qjhvhtzxzqqjkmpb
+xxyxx
+uurcxstgmygtbstg
+ieodomkazucvgmuy
+"
+    |> string.trim()
+
+  day05.part2(input) |> should.equal(2)
+}

@@ -11,4 +11,3 @@ pub fn part2_test() {
   day01.part2(")") |> should.equal(1)
   day01.part2("()())") |> should.equal(5)
 }
-

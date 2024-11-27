@@ -54,8 +54,7 @@ fn get_new_position(position: Position, direction: String) -> Position {
 fn house_visits(input: List(String), visited: Visited, position: Position) {
   case input {
     [] -> set.size(visited)
-    _ -> {
-      let assert [head, ..rest] = input
+    [head, ..rest] -> {
       let new_position = get_new_position(position, head)
       house_visits(rest, update_visited(visited, new_position), new_position)
     }
@@ -94,10 +93,9 @@ fn robo_santa_visits(
       let assert Ok(robo) = dict.get(state, "robo")
       santa.visits |> set.union(robo.visits) |> set.size
     }
-    _ -> {
+    [head, ..rest] -> {
       let visitor = robo_or_santa(is_santa)
       let assert Ok(visitor_state) = dict.get(state, visitor)
-      let assert [head, ..rest] = input
       let new_position = get_new_position(visitor_state.position, head)
       let updated_visits = update_visited(visitor_state.visits, new_position)
       let visitor_state =

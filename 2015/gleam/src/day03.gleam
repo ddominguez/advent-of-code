@@ -69,11 +69,9 @@ type Visitor {
 pub fn part2(input: String) -> Int {
   let initial_visited = set.from_list([[0, 0]])
   let initial_position = dict.from_list([#("x", 0), #("y", 0)])
-  let state =
-    dict.from_list([
-      #("santa", Visitor(visits: initial_visited, position: initial_position)),
-      #("robo", Visitor(visits: initial_visited, position: initial_position)),
-    ])
+  let santa_state = Visitor(visits: initial_visited, position: initial_position)
+  let robo_state = Visitor(visits: initial_visited, position: initial_position)
+  let state = dict.from_list([#("santa", santa_state), #("robo", robo_state)])
   let is_santa = True
   string.to_graphemes(input) |> robo_santa_visits(state, is_santa)
 }
@@ -102,12 +100,9 @@ fn robo_santa_visits(
       let assert [head, ..rest] = input
       let new_position = get_new_position(visitor_state.position, head)
       let updated_visits = update_visited(visitor_state.visits, new_position)
-      let new_state =
-        dict.insert(
-          state,
-          visitor,
-          Visitor(visits: updated_visits, position: new_position),
-        )
+      let visitor_state =
+        Visitor(visits: updated_visits, position: new_position)
+      let new_state = dict.insert(state, visitor, visitor_state)
       robo_santa_visits(rest, new_state, bool.negate(is_santa))
     }
   }

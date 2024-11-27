@@ -1,5 +1,6 @@
 import aoc
 import argv
+import gleam/bool
 import gleam/dict.{type Dict}
 import gleam/io
 import gleam/set.{type Set}
@@ -40,24 +41,74 @@ fn update_visited(visited: Visited, position: Position) -> Visited {
   }
 }
 
+fn get_new_position(position: Position, direction: String) -> Position {
+  case direction {
+    "^" -> update_position(position, "y", 1)
+    ">" -> update_position(position, "x", 1)
+    "v" -> update_position(position, "y", -1)
+    "<" -> update_position(position, "x", -1)
+    _ -> panic as "Unknown value"
+  }
+}
+
 fn house_visits(input: List(String), visited: Visited, position: Position) {
   case input {
     [] -> set.size(visited)
     _ -> {
       let assert [head, ..rest] = input
-      let new_position = case head {
-        "^" -> update_position(position, "y", 1)
-        ">" -> update_position(position, "x", 1)
-        "v" -> update_position(position, "y", -1)
-        "<" -> update_position(position, "x", -1)
-        _ -> panic
-      }
+      let new_position = get_new_position(position, head)
       house_visits(rest, update_visited(visited, new_position), new_position)
     }
   }
 }
 
-pub fn part2(_input: String) -> Int {
-  io.debug("Todo")
-  -100
+type Visitor {
+  Visitor(visits: Visited, position: Position)
+}
+
+pub fn part2(input: String) -> Int {
+  let initial_visited = set.from_list([[0, 0]])
+  let initial_position = dict.from_list([#("x", 0), #("y", 0)])
+  let state =
+    dict.from_list([
+      #("santa", Visitor(visits: initial_visited, position: initial_position)),
+      #("robo", Visitor(visits: initial_visited, position: initial_position)),
+    ])
+  let is_santa = True
+  string.to_graphemes(input) |> robo_santa_visits(state, is_santa)
+}
+
+fn robo_or_santa(is_santa: Bool) -> String {
+  case is_santa {
+    True -> "santa"
+    False -> "robo"
+  }
+}
+
+fn robo_santa_visits(
+  input: List(String),
+  state: Dict(String, Visitor),
+  is_santa: Bool,
+) {
+  case input {
+    [] -> {
+      let assert Ok(santa) = dict.get(state, "santa")
+      let assert Ok(robo) = dict.get(state, "robo")
+      santa.visits |> set.union(robo.visits) |> set.size
+    }
+    _ -> {
+      let visitor = robo_or_santa(is_santa)
+      let assert Ok(visitor_state) = dict.get(state, visitor)
+      let assert [head, ..rest] = input
+      let new_position = get_new_position(visitor_state.position, head)
+      let updated_visits = update_visited(visitor_state.visits, new_position)
+      let new_state =
+        dict.insert(
+          state,
+          visitor,
+          Visitor(visits: updated_visits, position: new_position),
+        )
+      robo_santa_visits(rest, new_state, bool.negate(is_santa))
+    }
+  }
 }

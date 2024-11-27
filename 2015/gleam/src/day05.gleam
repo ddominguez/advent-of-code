@@ -72,7 +72,6 @@ pub fn part2(input: String) -> Int {
 fn is_nice_too(chars: List(String), pairs: Int, repeats: Int) -> Bool {
   case chars {
     [] -> pairs > 0 && repeats > 0
-    [_] | [_, _] -> is_nice_too([], pairs, repeats)
     [a, b, c, ..rest] -> {
       let pairs_exist = string.join([c, ..rest], "") |> string.contains(a <> b)
       is_nice_too(
@@ -81,5 +80,6 @@ fn is_nice_too(chars: List(String), pairs: Int, repeats: Int) -> Bool {
         increment(repeats, when: a == c),
       )
     }
+    _ -> is_nice_too([], pairs, repeats)
   }
 }

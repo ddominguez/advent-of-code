@@ -5,6 +5,7 @@ import gleam/dict.{type Dict}
 import gleam/int
 import gleam/io
 import gleam/list
+import gleam/result
 import gleam/string
 
 type Grid =
@@ -45,12 +46,7 @@ fn handle_instruction(grid: Grid, instruction: Instruction) {
   let on_off = case action {
     "on" -> True
     "off" -> False
-    _ -> {
-      case dict.get(acc, [x, y]) {
-        Ok(val) -> bool.negate(val)
-        Error(_) -> True
-      }
-    }
+    _ -> dict.get(acc, [x, y]) |> result.unwrap(False) |> bool.negate
   }
   dict.insert(acc, [x, y], on_off)
 }
@@ -72,6 +68,32 @@ fn parse(line: String) -> Instruction {
   }
 }
 
-pub fn part2(_input: String) -> Int {
-  -100
+pub fn part2(input: String) -> Int {
+  string.trim(input)
+  |> string.split("\n")
+  |> list.map(parse)
+  |> list.fold(dict.new(), adjust_brightness)
+  |> dict.fold(0, fn(acc, _key, val) { acc + val })
+}
+
+type BrightnessGrid =
+  Dict(List(Int), Int)
+
+fn adjust_brightness(
+  grid: BrightnessGrid,
+  instruction: Instruction,
+) -> BrightnessGrid {
+  let assert #(action, [x1, y1], [x2, y2]) = instruction
+  let x_range = list.range(x1, x2)
+  let y_range = list.range(y1, y2)
+
+  use acc, x <- list.fold(x_range, grid)
+  use acc, y <- list.fold(y_range, acc)
+  let curr_brightness = dict.get(acc, [x, y]) |> result.unwrap(0)
+  let brightness = case action {
+    "on" -> curr_brightness + 1
+    "off" -> int.max(curr_brightness - 1, 0)
+    _ -> curr_brightness + 2
+  }
+  dict.insert(acc, [x, y], brightness)
 }

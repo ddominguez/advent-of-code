@@ -23,11 +23,10 @@ pub fn part1(input: String) -> Int {
 }
 
 fn total_chars(line: String) -> Int {
-  let character_len = string.length(line)
   let assert [_first, ..rest] = string.to_graphemes(line)
   let data_len = rest |> list.take(list.length(rest) - 1) |> get_data_len(0)
 
-  character_len - data_len
+  string.length(line) - data_len
 }
 
 fn get_data_len(chars: List(String), data_len: Int) -> Int {
@@ -40,6 +39,23 @@ fn get_data_len(chars: List(String), data_len: Int) -> Int {
   }
 }
 
-pub fn part2(_input: String) -> Int {
-  -100
+pub fn part2(input: String) -> Int {
+  input
+  |> string.trim
+  |> string.split("\n")
+  |> list.fold(0, fn(acc, line) {
+    let additional_quotes = 2
+    let char_count =
+      string.to_graphemes(line) |> get_char_count(additional_quotes)
+    acc + char_count - string.length(line)
+  })
+}
+
+fn get_char_count(line: List(String), count: Int) -> Int {
+  case line {
+    [] -> count
+    ["\"", ..rest] -> get_char_count(rest, count + 2)
+    ["\\", ..rest] -> get_char_count(rest, count + 2)
+    [_, ..rest] -> get_char_count(rest, count + 1)
+  }
 }

@@ -9,7 +9,18 @@ pub fn part1_test() {
 \"aaa\\\"aaa\"
 \"\\x27\"
 "
-  //let input = "\"byc\\x9dyxuafof\\\\\\xa6uf\\\\axfozomj\\\\olh\\x6a\""
 
   day08.part1(input) |> should.equal(12)
+}
+
+pub fn part2_test() {
+  let input =
+    "
+\"\"
+\"abc\"
+\"aaa\\\"aaa\"
+\"\\x27\"
+"
+
+  day08.part2(input) |> should.equal(19)
 }

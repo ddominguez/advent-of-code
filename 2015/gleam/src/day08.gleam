@@ -1,6 +1,5 @@
 import aoc
 import argv
-import gleam/int
 import gleam/io
 import gleam/list
 import gleam/string
@@ -18,15 +17,11 @@ pub fn part1(input: String) -> Int {
   input
   |> string.trim
   |> string.split("\n")
-  |> list.map(total_chars)
-  |> int.sum
-}
-
-fn total_chars(line: String) -> Int {
-  let assert [_first, ..rest] = string.to_graphemes(line)
-  let data_len = rest |> list.take(list.length(rest) - 1) |> get_data_len(0)
-
-  string.length(line) - data_len
+  |> list.fold(0, fn(acc, line) {
+    let additional_quotes = -2
+    let data_len = string.to_graphemes(line) |> get_data_len(additional_quotes)
+    acc + string.length(line) - data_len
+  })
 }
 
 fn get_data_len(chars: List(String), data_len: Int) -> Int {

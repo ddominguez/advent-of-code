@@ -69,9 +69,9 @@ func Part2(input string) int {
 		if isSafe(levels) {
 			result++
 		} else {
-            for i := range levels {
-                newLevels := append([]int{}, levels[:i]...)
-                newLevels = append(newLevels, levels[i+1:]...)
+			for i := range levels {
+				newLevels := append([]int{}, levels[:i]...)
+				newLevels = append(newLevels, levels[i+1:]...)
 				if isSafe(newLevels) {
 					result++
 					break

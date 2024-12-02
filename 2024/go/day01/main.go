@@ -16,22 +16,27 @@ func abs(num int) int {
 	return num
 }
 
-func get_data(lines []string) ([]int, []int) {
+func get_data(lines []string, use_frequency bool) ([]int, []int, map[int]int) {
 	var left []int
 	var right []int
+	rightFrequency := make(map[int]int)
 	for _, line := range lines {
 		pair := strings.Fields(line)
 		a, _ := strconv.Atoi(pair[0])
 		b, _ := strconv.Atoi(pair[1])
 		left = append(left, a)
-		right = append(right, b)
+		if use_frequency {
+			rightFrequency[b] += 1
+		} else {
+			right = append(right, b)
+		}
 	}
-	return left, right
+	return left, right, rightFrequency
 }
 
 func Part1(input string) int {
 	lines := strings.Split(strings.TrimSpace(input), "\n")
-	left, right := get_data(lines)
+	left, right, _ := get_data(lines, false)
 	slices.Sort(left)
 	slices.Sort(right)
 
@@ -44,16 +49,11 @@ func Part1(input string) int {
 
 func Part2(input string) int {
 	lines := strings.Split(strings.TrimSpace(input), "\n")
-	left, right := get_data(lines)
-
-	counter := make(map[int]int)
-	for _, val := range right {
-		counter[val] += 1
-	}
+	left, _, rightFrequency := get_data(lines, true)
 
 	var total int
 	for _, val := range left {
-		total += val * counter[val]
+		total += val * rightFrequency[val]
 	}
 	return total
 }

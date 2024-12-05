@@ -50,20 +50,18 @@ func findXMAS(grid [][]string, currPos []int, maxCol, maxRow int) int {
 	okUp := row-(wl-1) >= 0
 	okDown := row+(wl-1) <= maxRow
 
-	if okRight {
-		if grid[row][col+1] == "M" &&
-			grid[row][col+2] == "A" &&
-			grid[row][col+3] == "S" {
-			count++
-		}
+	if okRight &&
+		grid[row][col+1] == "M" &&
+		grid[row][col+2] == "A" &&
+		grid[row][col+3] == "S" {
+		count++
 	}
 
-	if okLeft {
-		if grid[row][col-1] == "M" &&
-			grid[row][col-2] == "A" &&
-			grid[row][col-3] == "S" {
-			count++
-		}
+	if okLeft &&
+		grid[row][col-1] == "M" &&
+		grid[row][col-2] == "A" &&
+		grid[row][col-3] == "S" {
+		count++
 	}
 
 	if okUp {

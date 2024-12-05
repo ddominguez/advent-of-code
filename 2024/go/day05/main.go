@@ -25,15 +25,14 @@ func part1(input string) int {
 	middleVals := []string{}
 	for _, pages := range updates {
 		isCorrect := true
+	pagesLoop:
 		for i := 0; i < len(pages); i++ {
-			for _, sp := range pages[i+1:] {
-				if !rules[pages[i]][sp] {
+			currPage := pages[i]
+			for _, afterCurPage := range pages[i+1:] {
+				if !rules[currPage][afterCurPage] {
 					isCorrect = false
-					break
+					break pagesLoop
 				}
-			}
-			if !isCorrect {
-				break
 			}
 		}
 		if isCorrect {
@@ -55,12 +54,11 @@ func getRulesAndUpdates(input string) (map[string]map[string]bool, [][]string) {
 	sections := strings.Split(input, "\n\n")
 
 	for _, r := range strings.Split(sections[0], "\n") {
-		rr := strings.Split(r, "|")
-		_, ok := rules[rr[0]]
-		if !ok {
-			rules[rr[0]] = map[string]bool{}
+		order := strings.Split(r, "|")
+		if rules[order[0]] == nil {
+			rules[order[0]] = map[string]bool{}
 		}
-		rules[rr[0]][rr[1]] = true
+		rules[order[0]][order[1]] = true
 	}
 	for _, v := range strings.Split(sections[1], "\n") {
 		updates = append(updates, strings.Split(v, ","))
@@ -75,9 +73,9 @@ func part2(input string) int {
 	for i := 0; i < len(updates); {
 		isCorrect := true
 		pages := updates[i]
-		for j, page := range pages {
-			for _, sp := range pages[j+1:] {
-				if !rules[page][sp] {
+		for j, currPage := range pages {
+			for _, afterCurPage := range pages[j+1:] {
+				if !rules[currPage][afterCurPage] {
 					isCorrect = false
 					wasIncorrect = true
 					pages[j], pages[j+1] = pages[j+1], pages[j]

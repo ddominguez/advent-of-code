@@ -22,11 +22,8 @@ func main() {
 
 func part1(input string) int {
 	rules, updates := getRulesAndUpdates(strings.TrimSpace(input))
-	// fmt.Println(rules)
-	// fmt.Println(updates)
 	middleVals := []string{}
 	for _, pages := range updates {
-		// fmt.Println(pages)
 		isCorrect := true
 		for i := 0; i < len(pages); i++ {
 			for _, sp := range pages[i+1:] {
@@ -72,6 +69,36 @@ func getRulesAndUpdates(input string) (map[string]map[string]bool, [][]string) {
 }
 
 func part2(input string) int {
-	fmt.Println(input)
-	return 100
+	rules, updates := getRulesAndUpdates(strings.TrimSpace(input))
+	middleVals := []string{}
+	wasIncorrect := false
+	for i := 0; i < len(updates); {
+		isCorrect := true
+		pages := updates[i]
+		for j, page := range pages {
+			for _, sp := range pages[j+1:] {
+				if !rules[page][sp] {
+					isCorrect = false
+					wasIncorrect = true
+					pages[j], pages[j+1] = pages[j+1], pages[j]
+					updates[i] = pages
+					break
+				}
+			}
+		}
+		if isCorrect {
+			if wasIncorrect {
+				middleVals = append(middleVals, pages[len(pages)/2])
+				wasIncorrect = false
+			}
+			i++
+		}
+	}
+
+	var result int
+	for _, v := range middleVals {
+		num, _ := strconv.Atoi(v)
+		result += num
+	}
+	return result
 }

@@ -36,11 +36,14 @@ func part1(input string) int {
 		"right": {row: 0, col: 1},
 		"left":  {row: 0, col: -1},
 	}
+
+gridLoop:
 	for row := range height {
 		for col := range width {
 			if lines[row][col] == '^' {
 				guardPos.row = row
 				guardPos.col = col
+				break gridLoop
 			}
 		}
 	}
@@ -48,12 +51,12 @@ func part1(input string) int {
 	visited := map[Position]bool{
 		guardPos: true,
 	}
-	for inBounds(guardPos, height, width) {
+	for isInBounds(guardPos, height, width) {
 		nextPos := Position{
 			row: guardPos.row + directions[direction].row,
 			col: guardPos.col + directions[direction].col,
 		}
-		if !inBounds(nextPos, height, width) {
+		if !isInBounds(nextPos, height, width) {
 			break
 		}
 		if lines[nextPos.row][nextPos.col] == '#' {
@@ -66,7 +69,7 @@ func part1(input string) int {
 	return len(visited)
 }
 
-func inBounds(position Position, height, width int) bool {
+func isInBounds(position Position, height, width int) bool {
 	row := position.row
 	col := position.col
 	return col >= 0 && col < width && row >= 0 && row < height
@@ -87,6 +90,7 @@ func newDirection(direction string) string {
 }
 
 func part2(input string) int {
+	fmt.Println(input)
 	var result int
 	return result
 }

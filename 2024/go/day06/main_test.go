@@ -26,7 +26,7 @@ func TestPart1(t *testing.T) {
 func TestPart2(t *testing.T) {
 	t.Skip()
 	result := part2(input)
-	expected := -100
+	expected := 6
 	if result != expected {
 		t.Fatalf("expected %d, got %d", expected, result)
 	}

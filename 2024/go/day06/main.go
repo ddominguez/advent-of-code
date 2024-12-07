@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"slices"
 	"strings"
 )
 
@@ -38,11 +37,9 @@ func main() {
 }
 func part1(input string) int {
 	lines := strings.Fields(strings.TrimSpace(input))
-	initialPosition := getInitialPosition(lines)
-	initialDirection := "up"
 	visited := getVisitedPositions(lines, PositionDirection{
-		pos: initialPosition,
-		dir: initialDirection,
+		pos: getInitialPosition(lines),
+		dir: "up",
 	})
 
 	unique := make(map[Position]bool)
@@ -54,20 +51,18 @@ func part1(input string) int {
 
 func part2(input string) int {
 	lines := strings.Fields(strings.TrimSpace(input))
-	initialPosition := getInitialPosition(lines)
-	initialDirection := "up"
-	initialPD := PositionDirection{
-		pos: initialPosition,
-		dir: initialDirection,
+	initial := PositionDirection{
+		pos: getInitialPosition(lines),
+		dir: "up",
 	}
-	visited := getVisitedPositions(lines, initialPD)
+	visited := getVisitedPositions(lines, initial)
 
 	unique := make(map[Position]bool)
-	for _, obstacle := range slices.Backward(visited) {
-		if obstacle.pos == initialPosition {
+	for _, obstacle := range visited {
+		if obstacle.pos == initial.pos {
 			continue
 		}
-		if !unique[obstacle.pos] && isLoop(lines, initialPD, obstacle) {
+		if !unique[obstacle.pos] && isLoop(lines, initial, obstacle) {
 			unique[obstacle.pos] = true
 		}
 	}

@@ -12,6 +12,11 @@ type Position struct {
 	col int
 }
 
+type PositionDirection struct {
+	pos Position
+	dir string
+}
+
 var directions = map[string]Position{
 	"up":    {row: -1, col: 0},
 	"down":  {row: 1, col: 0},
@@ -48,28 +53,44 @@ gridLoop:
 
 func part1(input string) int {
 	lines := strings.Fields(strings.TrimSpace(input))
+	initialPosition := getInitialPosition(lines)
+	initialDirection := "up"
+	visited := getVisitedPositions(lines, PositionDirection{
+		pos: initialPosition,
+		dir: initialDirection,
+	})
+
+	unique := make(map[Position]bool)
+	for i := range visited {
+		unique[visited[i].pos] = true
+	}
+	return len(unique)
+}
+
+func getVisitedPositions(
+	lines []string,
+	guard PositionDirection,
+) []PositionDirection {
+	var visited []PositionDirection
 	height := len(lines)
 	width := len(lines[0])
-	guardPos := getInitialPosition(lines)
-	direction := "up"
 
-	visited := make(map[Position]bool)
-	for isInBounds(guardPos, height, width) {
+	for isInBounds(guard.pos, height, width) {
+		visited = append(visited, guard)
 		nextPos := Position{
-			row: guardPos.row + directions[direction].row,
-			col: guardPos.col + directions[direction].col,
+			row: guard.pos.row + directions[guard.dir].row,
+			col: guard.pos.col + directions[guard.dir].col,
 		}
-		visited[guardPos] = true
 		if !isInBounds(nextPos, height, width) {
 			break
 		}
 		if lines[nextPos.row][nextPos.col] == '#' {
-			direction = newDirection(direction)
+			guard.dir = newDirection(guard.dir)
 			continue
 		}
-		guardPos = nextPos
+		guard.pos = nextPos
 	}
-	return len(visited)
+	return visited
 }
 
 func isInBounds(position Position, height, width int) bool {

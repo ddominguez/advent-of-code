@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"slices"
 	"strings"
 )
 
@@ -35,22 +36,6 @@ func main() {
 		fmt.Println(part1(string(data)))
 	}
 }
-
-func getInitialPosition(lines []string) Position {
-	position := Position{}
-gridLoop:
-	for row := range len(lines) {
-		for col := range len(lines[0]) {
-			if lines[row][col] == '^' {
-				position.row = row
-				position.col = col
-				break gridLoop
-			}
-		}
-	}
-	return position
-}
-
 func part1(input string) int {
 	lines := strings.Fields(strings.TrimSpace(input))
 	initialPosition := getInitialPosition(lines)
@@ -67,6 +52,70 @@ func part1(input string) int {
 	return len(unique)
 }
 
+func part2(input string) int {
+	lines := strings.Fields(strings.TrimSpace(input))
+	initialPosition := getInitialPosition(lines)
+	initialDirection := "up"
+	initialPD := PositionDirection{
+		pos: initialPosition,
+		dir: initialDirection,
+	}
+	visited := getVisitedPositions(lines, initialPD)
+
+	unique := make(map[Position]bool)
+	for _, obstacle := range slices.Backward(visited) {
+		if obstacle.pos == initialPosition {
+			continue
+		}
+		if !unique[obstacle.pos] && isLoop(lines, initialPD, obstacle) {
+			unique[obstacle.pos] = true
+		}
+	}
+	return len(unique)
+}
+
+func isLoop(lines []string, current, obstacle PositionDirection) bool {
+	visited := make(map[PositionDirection]bool)
+	for {
+		if visited[current] {
+			return true
+		}
+		visited[current] = true
+		nextPos := getNextPosition(current)
+		if !isInBounds(nextPos, len(lines), len(lines[0])) {
+			break
+		}
+		if nextPos == obstacle.pos || lines[nextPos.row][nextPos.col] == '#' {
+			current.dir = newDirection(current.dir)
+			continue
+		}
+		current.pos = nextPos
+	}
+	return false
+}
+
+func getNextPosition(current PositionDirection) Position {
+	return Position{
+		row: current.pos.row + directions[current.dir].row,
+		col: current.pos.col + directions[current.dir].col,
+	}
+}
+
+func getInitialPosition(lines []string) Position {
+	position := Position{}
+gridLoop:
+	for row := range len(lines) {
+		for col := range len(lines[0]) {
+			if lines[row][col] == '^' {
+				position.row = row
+				position.col = col
+				break gridLoop
+			}
+		}
+	}
+	return position
+}
+
 func getVisitedPositions(
 	lines []string,
 	guard PositionDirection,
@@ -75,12 +124,9 @@ func getVisitedPositions(
 	height := len(lines)
 	width := len(lines[0])
 
-	for isInBounds(guard.pos, height, width) {
+	for {
 		visited = append(visited, guard)
-		nextPos := Position{
-			row: guard.pos.row + directions[guard.dir].row,
-			col: guard.pos.col + directions[guard.dir].col,
-		}
+		nextPos := getNextPosition(guard)
 		if !isInBounds(nextPos, height, width) {
 			break
 		}
@@ -111,10 +157,4 @@ func newDirection(direction string) string {
 		return "up"
 	}
 	return direction
-}
-
-func part2(input string) int {
-	fmt.Println(input)
-	var result int
-	return result
 }

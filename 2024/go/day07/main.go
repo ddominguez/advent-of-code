@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"maps"
 	"os"
 	"strconv"
 	"strings"
@@ -25,7 +26,7 @@ func main() {
 
 func part1(input string) int {
 	lines := strings.Split(strings.TrimSpace(input), "\n")
-	var validVals []int
+	var result int
 	for _, line := range lines {
 		testValue, nums := parse(line)
 		var opCombos [][]string
@@ -38,20 +39,16 @@ func part1(input string) int {
 		}
 
 		if hasValidEquation(nums, opCombos, testValue) {
-			validVals = append(validVals, testValue)
+			result += testValue
 		}
 	}
 
-	var result int
-	for _, v := range validVals {
-		result += v
-	}
 	return result
 }
 
 func part2(input string) int {
 	lines := strings.Split(strings.TrimSpace(input), "\n")
-	var validVals []int
+	var result int
 	for _, line := range lines {
 		testValue, nums := parse(line)
 		var opCombos [][]string
@@ -64,18 +61,20 @@ func part2(input string) int {
 		}
 
 		if hasValidEquation(nums, opCombos, testValue) {
-			validVals = append(validVals, testValue)
+			result += testValue
 		} else {
-            // TODO:
-			// generate new combos with concat || operator
-			// check if valid with concat op combos
+			if concatCombos[opsLen] != nil {
+				opCombos = concatCombos[opsLen]
+			} else {
+				opCombos = generateConcatCombos(combos[opsLen])
+				concatCombos[opsLen] = opCombos
+			}
+			if hasValidEquation(nums, opCombos, testValue) {
+				result += testValue
+			}
 		}
 	}
 
-	var result int
-	for _, v := range validVals {
-		result += v
-	}
 	return result
 }
 
@@ -97,10 +96,15 @@ func hasValidEquation(nums []int, opCombos [][]string, testVal int) bool {
 }
 
 func doOp(a, b int, op string) int {
-	if op == "*" {
+	switch op {
+	case "*":
 		return a * b
+	case "||":
+		num, _ := strconv.Atoi(strconv.Itoa(a) + strconv.Itoa(b))
+		return num
+	default:
+		return a + b
 	}
-	return a + b
 }
 
 func parse(line string) (int, []int) {
@@ -112,6 +116,23 @@ func parse(line string) (int, []int) {
 		nums = append(nums, n)
 	}
 	return val, nums
+}
+
+func generateConcatCombos(combos [][]string) [][]string {
+	var result [][]string
+	m := make(map[string]bool)
+	for _, combo := range combos {
+		for j := range len(combos[0]) {
+			orig := combo[j]
+			combo[j] = "||"
+			m[strings.Join(combo, ",")] = true
+			combo[j] = orig
+		}
+	}
+	for k := range maps.Keys(m) {
+		result = append(result, strings.Split(k, ","))
+	}
+	return result
 }
 
 func generateCombos(length int) [][]string {

@@ -30,4 +30,5 @@ func TestPart2(t *testing.T) {
 	if result != expected {
 		t.Fatalf("expected %d, got %d", expected, result)
 	}
+    // 10976847399437 too low
 }

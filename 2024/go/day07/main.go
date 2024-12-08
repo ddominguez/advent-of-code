@@ -9,6 +9,7 @@ import (
 )
 
 var combos = make(map[int][][]string)
+var concatCombos = make(map[int][][]string)
 
 func main() {
 	part := flag.Int("part", 1, "")
@@ -28,11 +29,12 @@ func part1(input string) int {
 	for _, line := range lines {
 		testValue, nums := parse(line)
 		var opCombos [][]string
-		if combos[len(nums)-1] != nil {
-			opCombos = combos[len(nums)-1]
+		opsLen := len(nums) - 1
+		if combos[opsLen] != nil {
+			opCombos = combos[opsLen]
 		} else {
-			opCombos = generateCombos(len(nums) - 1)
-			combos[len(nums)-1] = opCombos
+			opCombos = generateCombos(opsLen)
+			combos[opsLen] = opCombos
 		}
 
 		if hasValidEquation(nums, opCombos, testValue) {
@@ -48,13 +50,38 @@ func part1(input string) int {
 }
 
 func part2(input string) int {
+	lines := strings.Split(strings.TrimSpace(input), "\n")
+	var validVals []int
+	for _, line := range lines {
+		testValue, nums := parse(line)
+		var opCombos [][]string
+		opsLen := len(nums) - 1
+		if combos[opsLen] != nil {
+			opCombos = combos[opsLen]
+		} else {
+			opCombos = generateCombos(opsLen)
+			combos[opsLen] = opCombos
+		}
+
+		if hasValidEquation(nums, opCombos, testValue) {
+			validVals = append(validVals, testValue)
+		} else {
+            // TODO:
+			// generate new combos with concat || operator
+			// check if valid with concat op combos
+		}
+	}
+
 	var result int
+	for _, v := range validVals {
+		result += v
+	}
 	return result
 }
 
 func hasValidEquation(nums []int, opCombos [][]string, testVal int) bool {
 	for _, ops := range opCombos {
-        calcTotal := 0
+		calcTotal := 0
 		for i, num := range nums {
 			if i == 0 {
 				calcTotal = num

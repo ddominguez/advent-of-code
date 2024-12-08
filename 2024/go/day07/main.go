@@ -3,14 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
-	"maps"
 	"os"
 	"strconv"
 	"strings"
 )
-
-var combos = make(map[int][][]string)
-var concatCombos = make(map[int][][]string)
 
 func main() {
 	part := flag.Int("part", 1, "")
@@ -27,6 +23,7 @@ func main() {
 func part1(input string) int {
 	lines := strings.Split(strings.TrimSpace(input), "\n")
 	var result int
+	var combos = make(map[int][][]string)
 	for _, line := range lines {
 		testValue, nums := parse(line)
 		var opCombos [][]string
@@ -34,7 +31,7 @@ func part1(input string) int {
 		if combos[opsLen] != nil {
 			opCombos = combos[opsLen]
 		} else {
-			opCombos = generateCombos(opsLen)
+			opCombos = generateCombos(opsLen, false)
 			combos[opsLen] = opCombos
 		}
 
@@ -49,6 +46,7 @@ func part1(input string) int {
 func part2(input string) int {
 	lines := strings.Split(strings.TrimSpace(input), "\n")
 	var result int
+	var combos = make(map[int][][]string)
 	for _, line := range lines {
 		testValue, nums := parse(line)
 		var opCombos [][]string
@@ -56,22 +54,12 @@ func part2(input string) int {
 		if combos[opsLen] != nil {
 			opCombos = combos[opsLen]
 		} else {
-			opCombos = generateCombos(opsLen)
+			opCombos = generateCombos(opsLen, true)
 			combos[opsLen] = opCombos
 		}
 
 		if hasValidEquation(nums, opCombos, testValue) {
 			result += testValue
-		} else {
-			if concatCombos[opsLen] != nil {
-				opCombos = concatCombos[opsLen]
-			} else {
-				opCombos = generateConcatCombos(combos[opsLen])
-				concatCombos[opsLen] = opCombos
-			}
-			if hasValidEquation(nums, opCombos, testValue) {
-				result += testValue
-			}
 		}
 	}
 
@@ -118,24 +106,7 @@ func parse(line string) (int, []int) {
 	return val, nums
 }
 
-func generateConcatCombos(combos [][]string) [][]string {
-	var result [][]string
-	m := make(map[string]bool)
-	for _, combo := range combos {
-		for j := range len(combos[0]) {
-			orig := combo[j]
-			combo[j] = "||"
-			m[strings.Join(combo, ",")] = true
-			combo[j] = orig
-		}
-	}
-	for k := range maps.Keys(m) {
-		result = append(result, strings.Split(k, ","))
-	}
-	return result
-}
-
-func generateCombos(length int) [][]string {
+func generateCombos(length int, p2 bool) [][]string {
 	if length <= 0 {
 		return nil
 	}
@@ -152,6 +123,9 @@ func generateCombos(length int) [][]string {
 		}
 		generate(append(current, "+"), depth+1)
 		generate(append(current, "*"), depth+1)
+		if p2 {
+			generate(append(current, "||"), depth+1)
+		}
 	}
 
 	generate([]string{}, 0)

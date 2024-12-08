@@ -75,6 +75,9 @@ func hasValidEquation(nums []int, opCombos [][]string, testVal int) bool {
 				continue
 			}
 			calcTotal = doOp(calcTotal, num, ops[i-1])
+			if calcTotal > testVal {
+				break
+			}
 		}
 		if calcTotal == testVal {
 			return true

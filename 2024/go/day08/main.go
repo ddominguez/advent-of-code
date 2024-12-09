@@ -29,19 +29,17 @@ func part1(input string) int {
 	grid, frequencyPositions := parse(input)
 	maxCol := len(grid[0]) - 1
 	maxRow := len(grid) - 1
-	for freq, positions := range frequencyPositions {
+	for _, positions := range frequencyPositions {
 		for i, currPos := range positions {
 			for _, otherPos := range positions[i+1:] {
 				diffRow := currPos.row - otherPos.row
 				diffCol := currPos.col - otherPos.col
 				abovePos := positionAbove(currPos, diffRow, diffCol)
-				if isInBounds(abovePos, maxRow, maxCol) &&
-					grid[abovePos.row][abovePos.col] != freq {
+				if isInBounds(abovePos, maxRow, maxCol) {
 					unique[abovePos] = true
 				}
 				belowPos := positionBelow(otherPos, diffRow, diffCol)
-				if isInBounds(belowPos, maxRow, maxCol) &&
-					grid[belowPos.row][belowPos.col] != freq {
+				if isInBounds(belowPos, maxRow, maxCol) {
 					unique[belowPos] = true
 				}
 			}

@@ -35,11 +35,13 @@ func part1(input string) int {
 				diffRow := currPos.row - otherPos.row
 				diffCol := currPos.col - otherPos.col
 				abovePos := positionAbove(currPos, diffRow, diffCol)
-				if isInBounds(abovePos, maxRow, maxCol) && grid[abovePos.row][abovePos.col] != freq {
+				if isInBounds(abovePos, maxRow, maxCol) &&
+					grid[abovePos.row][abovePos.col] != freq {
 					unique[abovePos] = true
 				}
 				belowPos := positionBelow(otherPos, diffRow, diffCol)
-				if isInBounds(belowPos, maxRow, maxCol) && grid[belowPos.row][belowPos.col] != freq {
+				if isInBounds(belowPos, maxRow, maxCol) &&
+					grid[belowPos.row][belowPos.col] != freq {
 					unique[belowPos] = true
 				}
 			}
@@ -49,8 +51,51 @@ func part1(input string) int {
 }
 
 func part2(input string) int {
-	var result int
-	return result
+	unique := make(map[Position]bool)
+	grid, frequencyPositions := parse(input)
+	maxCol := len(grid[0]) - 1
+	maxRow := len(grid) - 1
+	for _, positions := range frequencyPositions {
+		for i, currPos := range positions {
+			for _, otherPos := range positions[i+1:] {
+				diffRow := currPos.row - otherPos.row
+				diffCol := currPos.col - otherPos.col
+				aboveCollection := collectAbove(currPos, diffRow, diffCol, maxRow, maxCol)
+				for _, ap := range aboveCollection {
+					unique[ap] = true
+				}
+				belowCollection := collectBelow(currPos, diffRow, diffCol, maxRow, maxCol)
+				for _, bp := range belowCollection {
+					unique[bp] = true
+				}
+			}
+		}
+	}
+	return len(unique)
+}
+
+func collectAbove(pos Position, diffRow, diffCol, maxRow, maxCol int) []Position {
+	collection := []Position{pos}
+	curr := pos
+	for curr.row > 0 && curr.col >= 0 && curr.col <= maxCol {
+		curr = positionAbove(curr, diffRow, diffCol)
+		if isInBounds(curr, maxRow, maxCol) {
+			collection = append(collection, curr)
+		}
+	}
+	return collection
+}
+
+func collectBelow(pos Position, diffRow, diffCol, maxRow, maxCol int) []Position {
+	collection := []Position{pos}
+	curr := pos
+	for curr.row <= maxRow && curr.col >= 0 && curr.col <= maxCol {
+		curr = positionBelow(curr, diffRow, diffCol)
+		if isInBounds(curr, maxRow, maxCol) {
+			collection = append(collection, curr)
+		}
+	}
+	return collection
 }
 
 func isInBounds(pos Position, maxRow, maxCol int) bool {

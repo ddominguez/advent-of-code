@@ -73,25 +73,19 @@ func part2(input string) int {
 }
 
 func collectAbove(pos Position, diffRow, diffCol, maxRow, maxCol int) []Position {
-	collection := []Position{pos}
-	curr := pos
-	for curr.row > 0 && curr.col >= 0 && curr.col <= maxCol {
-		curr = positionAbove(curr, diffRow, diffCol)
-		if isInBounds(curr, maxRow, maxCol) {
-			collection = append(collection, curr)
-		}
+	collection := []Position{}
+	for isInBounds(pos, maxRow, maxCol) {
+		collection = append(collection, pos)
+		pos = positionAbove(pos, diffRow, diffCol)
 	}
 	return collection
 }
 
 func collectBelow(pos Position, diffRow, diffCol, maxRow, maxCol int) []Position {
-	collection := []Position{pos}
-	curr := pos
-	for curr.row <= maxRow && curr.col >= 0 && curr.col <= maxCol {
-		curr = positionBelow(curr, diffRow, diffCol)
-		if isInBounds(curr, maxRow, maxCol) {
-			collection = append(collection, curr)
-		}
+	collection := []Position{}
+	for isInBounds(pos, maxRow, maxCol) {
+		collection = append(collection, pos)
+		pos = positionBelow(pos, diffRow, diffCol)
 	}
 	return collection
 }
@@ -104,8 +98,7 @@ func positionAbove(pos Position, diffRow, diffCol int) Position {
 	return Position{row: pos.row - abs(diffRow), col: pos.col + diffCol}
 }
 func positionBelow(pos Position, diffRow, diffCol int) Position {
-	col := pos.col - diffCol
-	return Position{row: pos.row + abs(diffRow), col: col}
+	return Position{row: pos.row + abs(diffRow), col: pos.col - diffCol}
 }
 
 func abs(val int) int {

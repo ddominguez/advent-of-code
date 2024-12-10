@@ -14,18 +14,8 @@ func TestPart1(t *testing.T) {
 
 func TestPart2(t *testing.T) {
 	result := part2(input)
-	expected := -1000
+	expected := 2858
 	if result != expected {
 		t.Fatalf("expected %d, got %d", expected, result)
 	}
 }
-
-// func TestPoop(t *testing.T) {
-// 	t.Skip()
-// 	input := "234567874874903342482349"
-// 	result := part1(input)
-// 	expected := -1000
-// 	if result != expected {
-// 		t.Fatalf("expected %d, got %d", expected, result)
-// 	}
-// }

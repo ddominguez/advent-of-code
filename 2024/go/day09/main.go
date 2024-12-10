@@ -45,32 +45,39 @@ func checksum(blocks []string) int {
 }
 
 func moveFiles(blocks []string) []string {
-	bl := blocks
-	l, r1 := 0, len(bl)-1
+	l, r1 := 0, len(blocks)-1
 	r2 := r1
 	for l < r1 {
 		// get file
-		if bl[r1] == "." {
+		if blocks[r1] == "." {
 			r1--
 			r2 = r1
 			continue
 		}
-		for r1 > l && bl[r2] == bl[r1-1] {
+		for r1 > l && blocks[r2] == blocks[r1-1] {
 			r1--
 		}
-		file := bl[r1 : r2+1]
+		file := blocks[r1 : r2+1]
 		fileLen := len(file)
 
 		// find first empty block that can fit current file
 		haveEmptyBlocks := false
-		available := strings.Repeat(".", fileLen)
-		for l < r1 && strings.Join(bl[l:l+fileLen], "") != available {
-			l++
+		for emptyCount := 0; l < r1 && emptyCount < fileLen; {
+			for i := range fileLen {
+				if blocks[l+i] == "." {
+					emptyCount++
+				}
+			}
+			if emptyCount < fileLen {
+				l++
+				emptyCount = 0
+				continue
+			}
+			haveEmptyBlocks = true
 		}
-		haveEmptyBlocks = strings.Join(bl[l:l+fileLen], "") == available
 		if haveEmptyBlocks {
 			for i := range fileLen {
-				bl[l+i], bl[r2-i] = bl[r2-i], bl[l+i]
+				blocks[l+i], blocks[r2-i] = blocks[r2-i], blocks[l+i]
 			}
 		}
 
@@ -78,24 +85,23 @@ func moveFiles(blocks []string) []string {
 		r2 = r1
 		l = 0
 	}
-	return bl
+	return blocks
 }
 
 func moveBlocks(blocks []string) []string {
-	bl := blocks
-	l, r := 0, len(bl)-1
+	l, r := 0, len(blocks)-1
 	for l < r {
-		for bl[l] != "." && l < r {
+		for blocks[l] != "." && l < r {
 			l++
 		}
-		for bl[r] == "." && l < r {
+		for blocks[r] == "." && l < r {
 			r--
 		}
-		bl[l], bl[r] = bl[r], bl[l]
+		blocks[l], blocks[r] = blocks[r], blocks[l]
 		l++
 		r--
 	}
-	return bl
+	return blocks
 }
 
 func toBlocks(input string) []string {

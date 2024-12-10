@@ -57,12 +57,11 @@ func moveFiles(blocks []string) []string {
 		for r1 > l && blocks[r2] == blocks[r1-1] {
 			r1--
 		}
-		file := blocks[r1 : r2+1]
-		fileLen := len(file)
+		fileLen := len(blocks[r1 : r2+1])
 
-		// find first empty block that can fit current file
+		// find first set of empty blocks that can fit current file
 		haveEmptyBlocks := false
-		for emptyCount := 0; l < r1 && emptyCount < fileLen; {
+		for emptyCount := 0; l < r1 && !haveEmptyBlocks; {
 			for i := range fileLen {
 				if blocks[l+i] == "." {
 					emptyCount++

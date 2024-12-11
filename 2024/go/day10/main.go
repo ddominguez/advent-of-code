@@ -15,6 +15,7 @@ type Position struct {
 
 type Visited map[Position]bool
 type Positions []Position
+type Grid [][]int
 
 var directions = []Position{
 	{row: -1, col: 0},
@@ -37,43 +38,46 @@ func main() {
 
 func part1(input string) int {
 	grid, startPositions := parse(input)
+	getRating := false
+	initialScore := 0
 	var result int
 	for _, currPos := range startPositions {
 		visited := make(Visited)
-		currentPath := Positions{}
-		score, _, _ := trailHeadScore(grid, currPos, visited, currentPath, 0)
+		score, _ := walkTrailHead(grid, currPos, visited, getRating, initialScore)
 		result += score
 	}
 	return result
 }
 
 func part2(input string) int {
+	grid, startPositions := parse(input)
+	getRating := true
+	initialRating := 0
 	var result int
+	for _, currPos := range startPositions {
+		visited := make(Visited)
+		rating, _ := walkTrailHead(grid, currPos, visited, getRating, initialRating)
+		result += rating
+	}
 	return result
 }
 
-func trailHeadScore(grid [][]string, pos Position,
-	visited Visited, path Positions, score int) (int, Visited, Positions) {
+func walkTrailHead(grid Grid, pos Position, visited Visited, getRating bool, score int) (int, Visited) {
 	maxRow := len(grid) - 1
 	maxCol := len(grid[0]) - 1
-	if pos.row < 0 || pos.row > maxRow || pos.col < 0 || pos.col > maxCol {
-		return score, visited, path
-	}
 
 	if visited[pos] {
-		return score, visited, path
+		return score, visited
 	}
 
-	if grid[pos.row][pos.col] == "9" {
-		visited[pos] = true
-		path = append(path, pos)
-		return score + 1, visited, path
+	if grid[pos.row][pos.col] == 9 {
+		if !getRating {
+			visited[pos] = true
+		}
+		return score + 1, visited
 	}
-
-	path = append(path, pos)
 
 	for i := range directions {
-		gridVal, _ := strconv.Atoi(grid[pos.row][pos.col])
 		newPos := Position{
 			row: pos.row + directions[i].row,
 			col: pos.col + directions[i].col,
@@ -81,42 +85,29 @@ func trailHeadScore(grid [][]string, pos Position,
 		if newPos.row < 0 || newPos.row > maxRow || newPos.col < 0 || newPos.col > maxCol {
 			continue
 		}
-		if visited[newPos] {
-			continue
+		if grid[newPos.row][newPos.col] == grid[pos.row][pos.col]+1 {
+			score, visited = walkTrailHead(grid, newPos, visited, getRating, score)
 		}
-		newVal, _ := strconv.Atoi(grid[newPos.row][newPos.col])
-		if gridVal+1 != newVal {
-			continue
-		}
-		score, visited, path = trailHeadScore(grid, newPos, visited, path, score)
 	}
-
-	path, last := pop(path)
-	visited[last] = true
-	return trailHeadScore(grid, last, visited, path, score)
+	return score, visited
 }
 
-func parse(input string) ([][]string, Positions) {
-	var grid [][]string
+func parse(input string) (Grid, Positions) {
+	var grid Grid
 	var startPositions []Position
-
 	for ri, rv := range strings.Fields(strings.TrimSpace(input)) {
-		cols := strings.Split(rv, "")
+		cols := []int{}
+		for i := range strings.Split(rv, "") {
+			n, _ := strconv.Atoi(string(rv[i]))
+			cols = append(cols, n)
+		}
 		grid = append(grid, cols)
 		for ci := range cols {
-			if cols[ci] == "0" {
+			if cols[ci] == 0 {
 				startPositions = append(startPositions,
 					Position{row: ri, col: ci})
 			}
 		}
 	}
-
 	return grid, startPositions
-}
-
-func pop(s Positions) (Positions, Position) {
-	if len(s) == 0 {
-		return s, Position{}
-	}
-	return s[:len(s)-1], s[len(s)-1]
 }

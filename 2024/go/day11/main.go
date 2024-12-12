@@ -14,62 +14,43 @@ func main() {
 	data, _ := os.ReadFile("../../input/11.txt")
 
 	if *part == 2 {
-		fmt.Println(part1(string(data), 75))
+		fmt.Println(run(string(data), 75))
 	} else {
-		fmt.Println(part1(string(data), 25))
+		fmt.Println(run(string(data), 25))
 	}
 }
 
-func part1(input string, count int) int {
-	stoneCounts := make(map[string]int)
+func run(input string, count int) int {
+	stones := make(map[int]int)
 	for _, s := range strings.Fields(strings.TrimSpace(input)) {
-		stoneCounts[s]++
+		n, _ := strconv.Atoi(s)
+		stones[n]++
 	}
-	newStoneCounts, _ := blink(count, stoneCounts)
+
+	for range count {
+		stones = blink(stones)
+	}
+
 	var result int
-	for _, v := range newStoneCounts {
-		result += v
+	for i := range stones {
+		result += stones[i]
 	}
 	return result
 }
 
-// func part2(input string) int {
-// 	var result int
-// 	return result
-// }
-
-func blink(count int, stones map[string]int) (map[string]int, int) {
-	// fmt.Println(stones)
-	if count == 0 {
-		return stones, count
-	}
-	updatedStones := make(map[string]int)
-	for k, v := range stones {
-		for range v {
-			for _, s := range changeStones(k) {
-				updatedStones[s]++
-			}
+func blink(stones map[int]int) map[int]int {
+	updated := make(map[int]int)
+	for stone, total := range stones {
+		if stone == 0 {
+			updated[1] += total
+		} else if str := strconv.Itoa(stone); len(str)%2 == 0 {
+			n1, _ := strconv.Atoi(str[:len(str)/2])
+			n2, _ := strconv.Atoi(str[len(str)/2:])
+			updated[n1] += total
+			updated[n2] += total
+		} else {
+			updated[stone*2024] += total
 		}
-	}
-	return blink(count-1, updatedStones)
-}
-
-func changeStones(stone string) []string {
-	updated := []string{}
-	switch {
-	case stone == "0":
-		updated = append(updated, "1")
-	case len(stone)%2 == 0:
-		a := stone[:len(stone)/2]
-		b := strings.TrimLeft(stone[len(stone)/2:], "0")
-		if b == "" {
-			b = "0"
-		}
-		updated = append(updated, a)
-		updated = append(updated, b)
-	default:
-		n, _ := strconv.Atoi(stone)
-		updated = append(updated, strconv.Itoa(n*2024))
 	}
 	return updated
 }

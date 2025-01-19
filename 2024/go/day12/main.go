@@ -1,6 +1,7 @@
 package main
 
 import (
+	"container/list"
 	"flag"
 	"fmt"
 	"os"
@@ -46,11 +47,30 @@ func part1(input string) int {
 				continue
 			}
 			var perimeter, area int
-			current := Position{row: r, col: c}
-			// fmt.Printf("--- %s ---\n", grid[r][c])
-			perimeter, area, visited = get_perimeter_and_area(grid, current, visited)
-			// fmt.Printf("p: %d, a: %d\n", perimeter, area)
-			// fmt.Println(visited)
+			queue := list.New()
+			queue.PushBack(Position{col: c, row: r})
+			for queue.Len() > 0 {
+				front := queue.Front()
+				current := queue.Remove(front).(Position)
+				if visited[current.row][current.col] {
+					continue
+				}
+				if visited[current.row] == nil {
+					visited[current.row] = make(map[int]bool)
+				}
+				visited[current.row][current.col] = true
+				area += 1
+				for _, dir := range directions {
+					nextRow := current.row + dir.row
+					nextCol := current.col + dir.col
+					isInBounds := 0 <= nextRow && nextRow < height && 0 <= nextCol && nextCol < width
+					if isInBounds && grid[nextRow][nextCol] == grid[current.row][current.col] {
+						queue.PushBack(Position{col: nextCol, row: nextRow})
+					} else {
+						perimeter += 1
+					}
+				}
+			}
 			result += perimeter * area
 		}
 	}
@@ -60,37 +80,6 @@ func part1(input string) int {
 func part2(input string) int {
 	var result int
 	return result
-}
-
-func get_perimeter_and_area(grid [][]string, current Position, visited Visited) (int, int, Visited) {
-	var perimeter int
-	var area int
-	maxRow := len(grid) - 1
-	maxCol := len(grid[0]) - 1
-
-	_, ok := visited[current.row]
-	if !ok {
-		visited[current.row] = make(map[int]bool)
-	}
-
-	area += 1
-	visited[current.row][current.col] = true
-	target := grid[current.row][current.col]
-	for _, dir := range directions {
-		next := Position{row: current.row + dir.row, col: current.col + dir.col}
-		isInBounds := next.row >= 0 && next.row <= maxRow && next.col >= 0 && next.col <= maxCol
-		if isInBounds && !visited[next.row][next.col] && grid[next.row][next.col] == target {
-			p, a, v := get_perimeter_and_area(grid, next, visited)
-			perimeter += p
-			area += a
-			visited = v
-		}
-		if !isInBounds || grid[next.row][next.col] != target {
-			perimeter += 1
-		}
-	}
-
-	return perimeter, area, visited
 }
 
 func parse(input string) [][]string {

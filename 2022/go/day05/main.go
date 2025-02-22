@@ -2,25 +2,18 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"strconv"
 	"strings"
-
-	"github.com/ddominguez/advent-of-code/utils"
 )
 
 func main() {
 	var result string
-
-	data, err := utils.InputData(utils.Puzzle{
-		Day:        "05",
-		Year:       "2022",
-		UseExample: false,
-	})
-	if err != nil {
-		panic(err)
-	}
 	var stackMap = make(map[int][]string)
 
-	split := strings.Split(data, "\n\n")
+	data, _ := os.ReadFile("../../input/05.txt")
+
+	split := strings.Split(string(data), "\n\n")
 	stack := split[0]
 	procedures := split[1]
 
@@ -41,18 +34,9 @@ func main() {
 
 	for _, p := range strings.Split(strings.TrimSpace(procedures), "\n") {
 		splitProc := strings.Split(p, " ")
-		move, err := utils.StrToInt(splitProc[1])
-		if err != nil {
-			panic(err)
-		}
-		from, err := utils.StrToInt(splitProc[3])
-		if err != nil {
-			panic(err)
-		}
-		to, err := utils.StrToInt(splitProc[5])
-		if err != nil {
-			panic(err)
-		}
+		move, _ := strconv.Atoi(splitProc[1])
+		from, _ := strconv.Atoi(splitProc[3])
+		to, _ := strconv.Atoi(splitProc[5])
 
 		moving := stackMap[from][len(stackMap[from])-move : len(stackMap[from])]
 

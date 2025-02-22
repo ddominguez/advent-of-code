@@ -2,9 +2,8 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"strings"
-
-	"github.com/ddominguez/advent-of-code/utils"
 )
 
 const letters string = "abcdefghijklmnopqrstuvwxyz"
@@ -23,16 +22,9 @@ func main() {
 	var pt1Ans int
 	var pt2Ans int
 
-	data, err := utils.InputData(utils.Puzzle{
-		Day:        "03",
-		Year:       "2022",
-		UseExample: false,
-	})
-	if err != nil {
-		panic(err)
-	}
+	data, _ := os.ReadFile("../../input/03.txt")
 
-	lines := strings.Split(strings.TrimSpace(data), "\n")
+	lines := strings.Split(strings.TrimSpace(string(data)), "\n")
 
 	for i := range letters {
 		l := fmt.Sprintf("%c", letters[i])

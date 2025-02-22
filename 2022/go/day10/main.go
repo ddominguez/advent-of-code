@@ -2,22 +2,15 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"strconv"
 	"strings"
-
-	"github.com/ddominguez/advent-of-code/utils"
 )
 
 func main() {
-	data, err := utils.InputData(utils.Puzzle{
-		Day:        "10",
-		Year:       "2022",
-		UseExample: false,
-	})
-	if err != nil {
-		panic(err)
-	}
+	data, _ := os.ReadFile("../../input/10.txt")
 
-	lines := strings.Split(strings.TrimSpace(data), "\n")
+	lines := strings.Split(strings.TrimSpace(string(data)), "\n")
 	ops := []int{1, 2}
 	x := 1
 	cc := 0
@@ -34,7 +27,7 @@ func main() {
 		split := strings.Split(lines[i], " ")
 		v := 0
 		if !isNoop {
-			v, _ = utils.StrToInt(split[1])
+			v, _ = strconv.Atoi(split[1])
 		}
 		for j := range ops {
 			cc += 1

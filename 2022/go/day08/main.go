@@ -2,25 +2,17 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"strings"
-
-	"github.com/ddominguez/advent-of-code/utils"
 )
 
 func main() {
-	data, err := utils.InputData(utils.Puzzle{
-		Day:        "08",
-		Year:       "2022",
-		UseExample: false,
-	})
-	if err != nil {
-		panic(err)
-	}
+	data, _ := os.ReadFile("../../input/08.txt")
 
 	visible := 0
 	scenicScore := 0
 
-	lines := strings.Split(strings.TrimSpace(data), "\n")
+	lines := strings.Split(strings.TrimSpace(string(data)), "\n")
 	linesLen := len(lines)
 
 	for i := range lines {

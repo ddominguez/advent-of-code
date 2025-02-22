@@ -2,21 +2,15 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"strconv"
 	"strings"
-
-	"github.com/ddominguez/advent-of-code/utils"
 )
 
 func parsedSection(str string) []int {
 	section := strings.Split(str, "-")
-	start, err := utils.StrToInt(section[0])
-	if err != nil {
-		panic(err)
-	}
-	end, err := utils.StrToInt(section[1])
-	if err != nil {
-		panic(err)
-	}
+	start, _ := strconv.Atoi(section[0])
+	end, _ := strconv.Atoi(section[1])
 	return []int{start, end}
 }
 
@@ -24,16 +18,9 @@ func main() {
 	var pt1Ans int
 	var pt2Ans int
 
-	data, err := utils.InputData(utils.Puzzle{
-		Day:        "04",
-		Year:       "2022",
-		UseExample: false,
-	})
-	if err != nil {
-		panic(err)
-	}
+	data, _ := os.ReadFile("../../input/04.txt")
 
-	lines := strings.Split(strings.TrimSpace(data), "\n")
+	lines := strings.Split(strings.TrimSpace(string(data)), "\n")
 	for i := range lines {
 		pair := strings.Split(lines[i], ",")
 		p1Section := parsedSection(pair[0])

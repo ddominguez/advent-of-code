@@ -2,9 +2,8 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"strings"
-
-	"github.com/ddominguez/advent-of-code/utils"
 )
 
 var shapes = map[string]string{
@@ -82,16 +81,9 @@ func main() {
 	var pt1Ans int
 	var pt2Ans int
 
-	data, err := utils.InputData(utils.Puzzle{
-		Day:        "02",
-		Year:       "2022",
-		UseExample: false,
-	})
-	if err != nil {
-		panic(err)
-	}
+	data, _ := os.ReadFile("../../input/02.txt")
 
-	split := strings.Split(strings.TrimSpace(data), "\n")
+	split := strings.Split(strings.TrimSpace(string(data)), "\n")
 
 	for i := range split {
 		gameSh := strings.Split(split[i], " ")

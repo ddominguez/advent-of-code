@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"strconv"
 	"strings"
-
-	"github.com/ddominguez/advent-of-code/utils"
 )
 
 type point struct {
@@ -56,18 +56,11 @@ func visitKey(t point) string {
 }
 
 func main() {
-	data, err := utils.InputData(utils.Puzzle{
-		Day:        "09",
-		Year:       "2022",
-		UseExample: false,
-	})
-	if err != nil {
-		panic(err)
-	}
+	data, _ := os.ReadFile("../../input/09.txt")
 
 	tailVisited := make(map[string]int)
 
-	lines := strings.Split(strings.TrimSpace(data), "\n")
+	lines := strings.Split(strings.TrimSpace(string(data)), "\n")
 
 	knotsCount := 2 // part 1
 	// knotsCount := 10 // part 2
@@ -78,7 +71,7 @@ func main() {
 	for i := range lines {
 		split := strings.Split(lines[i], " ")
 		direction := split[0]
-		steps, _ := utils.StrToInt(split[1])
+		steps, _ := strconv.Atoi(split[1])
 
 		for step := 0; step < steps; step++ {
 			for k := range knotsList {

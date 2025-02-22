@@ -2,11 +2,10 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"sort"
 	"strconv"
 	"strings"
-
-	"github.com/ddominguez/advent-of-code/utils"
 )
 
 func sum(sl []string) (int64, error) {
@@ -32,16 +31,9 @@ func max(sl []int64) int64 {
 }
 
 func main() {
-	data, err := utils.InputData(utils.Puzzle{
-		Day:        "01",
-		Year:       "2022",
-		UseExample: false,
-	})
-	if err != nil {
-		panic(err)
-	}
+	data, _ := os.ReadFile("../../input/01.txt")
 
-	split := strings.Split(strings.TrimSpace(data), "\n\n")
+	split := strings.Split(strings.TrimSpace(string(data)), "\n\n")
 
 	calories := make([]int64, len(split))
 

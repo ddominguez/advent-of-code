@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"strconv"
 	"strings"
-
-	"github.com/ddominguez/advent-of-code/utils"
 )
 
 type dirItem struct {
@@ -15,19 +15,12 @@ type dirItem struct {
 }
 
 func main() {
-	data, err := utils.InputData(utils.Puzzle{
-		Day:        "07",
-		Year:       "2022",
-		UseExample: false,
-	})
-	if err != nil {
-		panic(err)
-	}
+	data, _ := os.ReadFile("../../input/07.txt")
 
 	var path []string
 	dirSizes := make(map[string]int)
 
-	lines := strings.Split(strings.TrimSpace(data), "\n")
+	lines := strings.Split(strings.TrimSpace(string(data)), "\n")
 	for i := range lines {
 		split := strings.Split(lines[i], " ")
 		if split[1] == "cd" {
@@ -39,7 +32,7 @@ func main() {
 		} else if split[1] == "ls" || split[0] == "dir" {
 			continue
 		} else {
-			size, _ := utils.StrToInt(split[0])
+			size, _ := strconv.Atoi(split[0])
 			for i := range path {
 				dirSizes[strings.Join(path[:i+1], "")] += size
 			}

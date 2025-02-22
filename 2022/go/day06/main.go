@@ -2,9 +2,8 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"strings"
-
-	"github.com/ddominguez/advent-of-code/utils"
 )
 
 func hasUniqueChars(s string) bool {
@@ -17,14 +16,8 @@ func hasUniqueChars(s string) bool {
 }
 
 func main() {
-	data, err := utils.InputData(utils.Puzzle{
-		Day:        "06",
-		Year:       "2022",
-		UseExample: false,
-	})
-	if err != nil {
-		panic(err)
-	}
+	input, _ := os.ReadFile("../../input/06.txt")
+	data := string(input)
 
 	limit := 4 // Part 1
 	// limit := 14 // Part 2

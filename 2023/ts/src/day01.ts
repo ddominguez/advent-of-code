@@ -1,5 +1,4 @@
 import { readFile } from "node:fs";
-import { rootPath } from "@utils";
 
 
 const numbers = new Map([
@@ -14,7 +13,7 @@ const numbers = new Map([
   ["nine", "9"],
 ]);
 
-readFile(`${rootPath}/2023/input/01.txt`, "utf-8", (err, data) => {
+readFile("../input/01.txt", "utf-8", (err, data) => {
   if (err) {
     console.log(err);
     return;

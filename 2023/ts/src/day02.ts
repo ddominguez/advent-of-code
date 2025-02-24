@@ -1,7 +1,6 @@
 import { readFile } from "node:fs";
-import { rootPath } from "@utils";
 
-readFile(`${rootPath}/2023/input/02.txt`, "utf-8", (err, data) => {
+readFile("../input/02.txt", "utf-8", (err, data) => {
   if (err) {
     console.log(err);
     return;

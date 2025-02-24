@@ -1,7 +1,6 @@
 import { readFileSync } from "node:fs";
-import { rootPath } from "@utils";
 
-const data = readFileSync(`${rootPath}/2023/input/03.txt`, "utf-8");
+const data = readFileSync("../input/03.txt", "utf-8");
 const grid: string[][] = [];
 const partNumbers: number[] = [];
 const isSpecialChar = (char: string) => {

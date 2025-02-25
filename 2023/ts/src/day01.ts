@@ -8,7 +8,7 @@ async function main() {
   }
 }
 
-function part1(data: string) {
+export function part1(data: string) {
   let result = 0;
   for (const line of data.split("\n")) {
     const found: string[] = [];
@@ -22,7 +22,7 @@ function part1(data: string) {
   return result;
 }
 
-function part2(data: string) {
+export function part2(data: string) {
   let result = 0;
   const numbers = new Map([
     ["one", "1"],
@@ -60,5 +60,3 @@ function part2(data: string) {
 if (import.meta.path === Bun.main) {
   main();
 }
-
-export { part1, part2 };

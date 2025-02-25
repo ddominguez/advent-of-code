@@ -1,62 +1,77 @@
-import { readFile } from "node:fs";
+async function main() {
+	const input = Bun.file("../input/02.txt");
+	const data = await input.text();
+	if (Bun.argv[2] === "part2") {
+		console.log(part2(data.trim()));
+	} else {
+		console.log(part1(data.trim()));
+	}
+}
 
-readFile("../input/02.txt", "utf-8", (err, data) => {
-  if (err) {
-    console.log(err);
-    return;
-  }
+export function part1(data: string) {
+	let result = 0;
+	const maxColorCounts = new Map([
+		["red", 12],
+		["green", 13],
+		["blue", 14],
+	]);
 
-  const isPart1 = true;
-  let result = 0;
+	for (const line of data.split("\n")) {
+		const [game, sets] = line.split(": ");
+		let isPossible = true;
 
-  const maxColorCounts = new Map([
-    ["red", 12],
-    ["green", 13],
-    ["blue", 14],
-  ]);
+		for (const set of sets.split("; ")) {
+			if (!isPossible) {
+				break;
+			}
+			for (const cube of set.split(", ")) {
+				const [count, color] = cube.split(" ");
+				const countInt = Number.parseInt(count);
+				const maxCount = maxColorCounts.get(color);
+				if (maxCount && maxCount < countInt) {
+					isPossible = false;
+					break;
+				}
+			}
+		}
+		if (isPossible) {
+			result += Number.parseInt(game.replace(/\D/g, ""));
+		}
+	}
 
-  data
-    .trim()
-    .split("\n")
-    .forEach((line) => {
-      const [game, sets] = line.split(": ");
-      let isPossible = true;
-      const minColorCount = new Map([
-        ["red", 0],
-        ["green", 0],
-        ["blue", 0],
-      ]);
-      sets.split("; ").forEach((set) => {
-        if (!isPossible) {
-          return;
-        }
-        set.split(", ").forEach((cube) => {
-          const [count, color] = cube.split(" ");
-          const countInt = parseInt(count);
-          if (isPart1) {
-            const maxCount = maxColorCounts.get(color);
-            if (maxCount && maxCount < countInt) {
-              isPossible = false;
-              return;
-            }
-          } else {
-            const minCount = minColorCount.get(color);
-            if (minCount !== undefined) {
-              minColorCount.set(color, Math.max(minCount, countInt));
-            }
-          }
-        });
-      });
+	return result;
+}
 
-      if (isPart1 && isPossible) {
-        result += parseInt(game.replace(/\D/g, ""));
-      } else if (!isPart1) {
-        result += Array.from(minColorCount.values()).reduce(
-          (acc, curr) => acc * curr,
-          1,
-        );
-      }
-    });
+export function part2(data: string) {
+	let result = 0;
 
-  console.log(`part ${isPart1 ? 1 : 2} result:`, result);
-});
+	for (const line of data.split("\n")) {
+		const [_, sets] = line.split(": ");
+		const minColorCount = new Map([
+			["red", 0],
+			["green", 0],
+			["blue", 0],
+		]);
+
+		for (const set of sets.split("; ")) {
+			for (const cube of set.split(", ")) {
+				const [count, color] = cube.split(" ");
+				const countInt = Number.parseInt(count);
+				const minCount = minColorCount.get(color);
+				if (minCount !== undefined) {
+					minColorCount.set(color, Math.max(minCount, countInt));
+				}
+			}
+		}
+		result += Array.from(minColorCount.values()).reduce(
+			(acc, curr) => acc * curr,
+			1,
+		);
+	}
+
+	return result;
+}
+
+if (import.meta.path === Bun.main) {
+	main();
+}

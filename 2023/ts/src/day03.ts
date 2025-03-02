@@ -1,87 +1,134 @@
-import { readFileSync } from "node:fs";
+async function main() {
+  const input = Bun.file("../input/03.txt");
+  const data = await input.text();
+  if (Bun.argv[2] === "part2") {
+    console.log(part2(data.trim()));
+  } else {
+    console.log(part1(data.trim()));
+  }
+}
 
-const data = readFileSync("../input/03.txt", "utf-8");
-const grid: string[][] = [];
-const partNumbers: number[] = [];
-const isSpecialChar = (char: string) => {
-  if (!char) return false;
+type Position = {
+  row: number;
+  col: number;
+};
+
+const positions: Position[] = [
+  { row: -1, col: 0 },
+  { row: 0, col: 1 },
+  { row: 1, col: 0 },
+  { row: 0, col: -1 },
+  { row: -1, col: -1 },
+  { row: -1, col: 1 },
+  { row: 1, col: 1 },
+  { row: 1, col: -1 },
+];
+
+const isSpecialChar = (char: string): boolean => {
   return !/^[0-9.]+$/.test(char);
 };
 
-// return speacial char pos if tracked num is adjacent
-const getAdacent = (row: number, pos: number[]): number[] | null => {
-  const checkPos = [pos[0] - 1, ...pos, pos[pos.length - 1] + 1];
-  let col: number | undefined;
-  // curr row
-  col = checkPos.find((i) => isSpecialChar(grid[row][i]));
-  if (col) {
-    return [row, col];
-  }
-  // prev row
-  col = checkPos.find((i) => data[row - 1] && isSpecialChar(grid[row - 1][i]));
-  if (col) {
-    return [row - 1, col];
-  }
-  // next row
-  col = checkPos.find((i) => data[row + 1] && isSpecialChar(grid[row + 1][i]));
-  if (col) {
-    return [row + 1, col];
-  }
-  return null;
-};
+export function part1(data: string) {
+  let result = 0;
+  const lines = data.split("\n");
+  lines.forEach((line, row) => {
+    const trackedIdxNum = new Map<number, string>();
+    line.split("").forEach((char, col) => {
+      if (Number.parseInt(char) >= 0) {
+        trackedIdxNum.set(col, char);
+        if (col < line.length - 1) {
+          return;
+        }
+      }
 
-data
-  .trim()
-  .split("\n")
-  .forEach((line) => grid.push(Array.from(line)));
+      if (trackedIdxNum.size === 0) {
+        return;
+      }
 
-const spMap: Record<string, number[]> = {};
-grid.forEach((row, i) => {
-  let trackedNum = "";
-  let trackedNumPos: number[] = [];
-  row.forEach((char, j) => {
-    let checkAdj = false;
-    if (parseFloat(char) >= 0) {
-      trackedNum += char;
-      trackedNumPos.push(j);
-      checkAdj = j === row.length - 1 && trackedNum.length > 0;
-    } else {
-      checkAdj = trackedNum.length > 0;
-    }
+      let hasAdjacent = false;
+      for (const trackedCol of trackedIdxNum.keys()) {
+        if (hasAdjacent) {
+          break;
+        }
+        for (const pos of positions) {
+          if (
+            lines[row + pos.row] === undefined ||
+            lines[row + pos.row][trackedCol + pos.col] === undefined
+          ) {
+            continue;
+          }
 
-    if (checkAdj) {
-      const adjChar = getAdacent(i, trackedNumPos);
-      if (adjChar) {
-        partNumbers.push(Number(trackedNum));
-        const [sr, sc] = adjChar;
-        if (grid[sr][sc] === "*") {
-          const key = `${sr},${sc}`;
-          if (!Object.hasOwn(spMap, key)) {
-            spMap[key] = [Number(trackedNum)];
-          } else {
-            spMap[key].push(Number(trackedNum));
+          if (isSpecialChar(lines[row + pos.row][trackedCol + pos.col])) {
+            const partNum = Number([...trackedIdxNum.values()].join(""));
+            result += partNum;
+            hasAdjacent = true;
           }
         }
       }
-      trackedNum = "";
-      trackedNumPos = [];
-      checkAdj = false;
-    }
+
+      trackedIdxNum.clear();
+    });
   });
-});
-
-console.log(
-  "part 1:",
-  partNumbers.reduce((acc, curr) => acc + curr, 0),
-);
-
-const gearRatios: number[] = [];
-for (const [k, v] of Object.entries(spMap)) {
-  if (v.length == 2) {
-    gearRatios.push(v.reduce((acc, curr) => acc * curr, 1));
-  }
+  return result;
 }
-console.log(
-  "part 2:",
-  gearRatios.reduce((acc, curr) => acc + curr, 0),
-);
+
+export function part2(data: string) {
+  let result = 0;
+  const specialNumbers = new Map<string, number[]>();
+  const lines = data.split("\n");
+  lines.forEach((line, row) => {
+    const trackedIdxNum = new Map<number, string>();
+    line.split("").forEach((char, col) => {
+      if (Number.parseInt(char) >= 0) {
+        trackedIdxNum.set(col, char);
+        if (col < line.length - 1) {
+          return;
+        }
+      }
+
+      if (trackedIdxNum.size === 0) {
+        return;
+      }
+
+      let hasAdjacent = false;
+      for (const trackedCol of trackedIdxNum.keys()) {
+        if (hasAdjacent) {
+          break;
+        }
+        for (const pos of positions) {
+          if (
+            lines[row + pos.row] === undefined ||
+            lines[row + pos.row][trackedCol + pos.col] === undefined
+          ) {
+            continue;
+          }
+
+          if (lines[row + pos.row][trackedCol + pos.col] === "*") {
+            const partNum = Number([...trackedIdxNum.values()].join(""));
+            const key = `${row + pos.row},${trackedCol + pos.col}`;
+            const existingNums = specialNumbers.get(key);
+            if (existingNums) {
+              specialNumbers.set(key, [...existingNums, partNum]);
+            } else {
+              specialNumbers.set(key, [partNum]);
+            }
+            hasAdjacent = true;
+          }
+        }
+      }
+
+      trackedIdxNum.clear();
+    });
+  });
+
+  result = specialNumbers
+    .values()
+    .filter((v) => v.length === 2)
+    .map((v) => v.reduce((acc, cur) => acc * cur, 1))
+    .reduce((acc, cur) => acc + cur, 0);
+  return result;
+}
+
+if (import.meta.path === Bun.main) {
+  main();
+}

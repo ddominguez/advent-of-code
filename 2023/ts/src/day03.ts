@@ -45,11 +45,7 @@ export function part1(data: string) {
         return;
       }
 
-      let hasAdjacent = false;
-      for (const trackedCol of trackedIdxNum.keys()) {
-        if (hasAdjacent) {
-          break;
-        }
+      trackedLoop: for (const trackedCol of trackedIdxNum.keys()) {
         for (const pos of positions) {
           if (
             lines[row + pos.row] === undefined ||
@@ -61,7 +57,7 @@ export function part1(data: string) {
           if (isSpecialChar(lines[row + pos.row][trackedCol + pos.col])) {
             const partNum = Number([...trackedIdxNum.values()].join(""));
             result += partNum;
-            hasAdjacent = true;
+            break trackedLoop;
           }
         }
       }
@@ -90,11 +86,7 @@ export function part2(data: string) {
         return;
       }
 
-      let hasAdjacent = false;
-      for (const trackedCol of trackedIdxNum.keys()) {
-        if (hasAdjacent) {
-          break;
-        }
+      trackedLoop: for (const trackedCol of trackedIdxNum.keys()) {
         for (const pos of positions) {
           if (
             lines[row + pos.row] === undefined ||
@@ -112,7 +104,7 @@ export function part2(data: string) {
             } else {
               specialNumbers.set(key, [partNum]);
             }
-            hasAdjacent = true;
+            break trackedLoop;
           }
         }
       }

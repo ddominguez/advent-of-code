@@ -3,7 +3,7 @@ import unittest
 from src.day04 import part1, part2
 
 
-class TestDay01(unittest.TestCase):
+class TestDay04(unittest.TestCase):
     def test_part1(self):
         data = """
 Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53

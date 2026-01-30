@@ -1,58 +1,54 @@
 package main
 
 import (
+	"cmp"
+	"flag"
 	"fmt"
 	"os"
-	"sort"
+	"slices"
 	"strconv"
 	"strings"
 )
 
-func sum(sl []string) (int64, error) {
-	var sum int64
-	for i := range sl {
-		converted, err := strconv.ParseInt(sl[i], 10, 64)
-		if err != nil {
-			return -1, err
-		}
-		sum += converted
-	}
-	return sum, nil
-}
-
-func max(sl []int64) int64 {
-	var max int64
-	for i := range sl {
-		if sl[i] > max {
-			max = sl[i]
-		}
-	}
-	return max
-}
-
 func main() {
+	part := flag.Int("part", 1, "")
+	flag.Parse()
 	data, _ := os.ReadFile("../../input/01.txt")
 
-	split := strings.Split(strings.TrimSpace(string(data)), "\n\n")
+	if *part == 2 {
+		fmt.Println(part2(string(data)))
+	} else {
+		fmt.Println(part1(string(data)))
+	}
+}
 
-	calories := make([]int64, len(split))
+func part1(input string) int64 {
+	calories := caloriesPerElf(strings.Split(strings.TrimSpace(input), "\n\n"))
+	return slices.Max(calories)
+}
 
-	for i, elfCals := range split {
-		sum, err := sum(strings.Split(elfCals, "\n"))
-		if err != nil {
-			panic(err)
+func caloriesPerElf(inventory []string) []int64 {
+	calories := make([]int64, len(inventory))
+	for i, elfCalories := range inventory {
+		var total int64
+		for _, v := range strings.Split(elfCalories, "\n") {
+			parsed, _ := strconv.ParseInt(v, 10, 64)
+			total += parsed
 		}
-		calories[i] = sum
+		calories[i] = total
 	}
+	return calories
+}
 
-	fmt.Println("Part 1: ", max(calories))
+func part2(input string) int64 {
+	calories := caloriesPerElf(strings.Split(strings.TrimSpace(input), "\n\n"))
+	slices.SortFunc(calories, func(a, b int64) int {
+		return cmp.Compare(b, a)
+	})
 
-	// Part 2: Sort calories in descending order and get sum of top 3
-	sort.Slice(calories, func(i, j int) bool { return int(calories[i]) > int(calories[j]) })
-
-	var top3sum int64
+	var result int64
 	for _, v := range calories[0:3] {
-		top3sum += v
+		result += v
 	}
-	fmt.Println("Part 2: ", top3sum)
+	return result
 }

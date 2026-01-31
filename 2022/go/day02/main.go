@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 	"strings"
@@ -62,44 +63,46 @@ func gameResult(opp, me string) string {
 
 // myShape will return my shape based on the the opponents shape and my expected result
 func myShape(opp, res string) string {
-	if res == "draw" {
+	switch res {
+	case "loss":
+		return losingShape[opp]
+	case "win":
+		return winningShape[opp]
+	default:
 		return opp
 	}
-
-	if res == "win" {
-		return winningShape[opp]
-	}
-
-	if res == "loss" {
-		return losingShape[opp]
-	}
-
-	return ""
 }
 
 func main() {
-	var pt1Ans int
-	var pt2Ans int
-
+	part := flag.Int("part", 1, "")
+	flag.Parse()
 	data, _ := os.ReadFile("../../input/02.txt")
 
-	split := strings.Split(strings.TrimSpace(string(data)), "\n")
-
-	for i := range split {
-		gameSh := strings.Split(split[i], " ")
-		opp := gameSh[0]
-		me := gameSh[1]
-
-		pt1Res := gameResult(shapes[opp], shapes[me])
-		pt1Ans += outcomePoints[pt1Res] + shapePoints[shapes[me]]
-
-		mySh := myShape(shapes[opp], myResult[me])
-		if mySh == "" {
-			panic("could not get my game shape")
-		}
-		pt2Ans += outcomePoints[myResult[me]] + shapePoints[mySh]
+	if *part == 2 {
+		fmt.Println(part2(string(data)))
+	} else {
+		fmt.Println(part1(string(data)))
 	}
+}
 
-	fmt.Println("Part 1: ", pt1Ans)
-	fmt.Println("Part 2: ", pt2Ans)
+func part1(input string) int {
+	var res int
+	for _, round := range strings.Split(strings.TrimSpace(input), "\n") {
+		r := strings.Fields(round)
+		opp, me := r[0], r[1]
+		gameRes := gameResult(shapes[opp], shapes[me])
+		res += outcomePoints[gameRes] + shapePoints[shapes[me]]
+	}
+	return res
+}
+
+func part2(input string) int {
+	var res int
+	for _, round := range strings.Split(strings.TrimSpace(input), "\n") {
+		r := strings.Fields(round)
+		opp, me := r[0], r[1]
+		shape := myShape(shapes[opp], myResult[me])
+		res += outcomePoints[myResult[me]] + shapePoints[shape]
+	}
+	return res
 }

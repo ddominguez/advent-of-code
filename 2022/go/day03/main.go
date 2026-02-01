@@ -20,19 +20,18 @@ func main() {
 }
 
 func makePriorities() map[string]int {
-	var p = make(map[string]int)
-	for i, ch := range "abcdefghijklmnopqrstuvwxyz" {
-		l := fmt.Sprintf("%c", ch)
-		p[l] = i + 1
-		p[strings.ToUpper(l)] = i + 27
+	p := make(map[string]int)
+	for ch := 'a'; ch <= 'z'; ch++ {
+		p[string(ch)] = int(ch - 'a' + 1)
+		p[string(ch-32)] = int(ch - 'a' + 27)
 	}
 	return p
 }
 
 func strToMap(items string) map[string]struct{} {
-	var m = make(map[string]struct{})
+	m := make(map[string]struct{})
 	for i := range items {
-		m[fmt.Sprintf("%c", items[i])] = struct{}{}
+		m[string(items[i])] = struct{}{}
 	}
 	return m
 }
@@ -47,7 +46,7 @@ func part1(input string) int {
 		c2 := line[mid:]
 		c1Items := strToMap(c1)
 		for j := range c2 {
-			commonItem := fmt.Sprintf("%c", c2[j])
+			commonItem := string(c2[j])
 			if _, ok := c1Items[commonItem]; ok {
 				res += priorities[commonItem]
 				break
@@ -70,14 +69,14 @@ func part2(input string) int {
 			s2Items := make(map[string]struct{})
 
 			for i := range groupSacks[1] {
-				s := fmt.Sprintf("%c", groupSacks[1][i])
+				s := string(groupSacks[1][i])
 				if _, ok := s1Items[s]; ok {
 					s2Items[s] = struct{}{}
 				}
 			}
 
 			for i := range groupSacks[2] {
-				badge := fmt.Sprintf("%c", groupSacks[2][i])
+				badge := string(groupSacks[2][i])
 				if _, ok := s2Items[badge]; ok {
 					res += priorities[badge]
 					break

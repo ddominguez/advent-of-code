@@ -27,30 +27,31 @@ func main() {
 	}
 }
 
-func part1(input string) int {
+func process(input string, predicate func(s1, s2 []int) bool) int {
 	var res int
 	for _, line := range strings.Split(strings.TrimSpace(input), "\n") {
 		pair := strings.Split(line, ",")
-		p1Section := parsedSection(pair[0])
-		p2Section := parsedSection(pair[1])
-		if (p2Section[0] >= p1Section[0] && p2Section[1] <= p1Section[1]) ||
-			(p1Section[0] >= p2Section[0] && p1Section[1] <= p2Section[1]) {
+		section1 := parsedSection(pair[0])
+		section2 := parsedSection(pair[1])
+		if predicate(section1, section2) {
 			res += 1
 		}
 	}
 	return res
 }
 
+func rangeFullyContains(s1, s2 []int) bool {
+	return (s2[0] >= s1[0] && s2[1] <= s1[1]) || (s1[0] >= s2[0] && s1[1] <= s2[1])
+}
+
+func rangesOverlap(s1, s2 []int) bool {
+	return s2[1] >= s1[0] && s1[1] >= s2[0]
+}
+
+func part1(input string) int {
+	return process(input, rangeFullyContains)
+}
+
 func part2(input string) int {
-	var res int
-	for _, line := range strings.Split(strings.TrimSpace(input), "\n") {
-		pair := strings.Split(line, ",")
-		p1Section := parsedSection(pair[0])
-		p2Section := parsedSection(pair[1])
-		if (p2Section[1] >= p1Section[1] && p1Section[1] >= p2Section[0]) ||
-			(p1Section[1] >= p2Section[1] && p2Section[1] >= p1Section[0]) {
-			res += 1
-		}
-	}
-	return res
+	return process(input, rangesOverlap)
 }

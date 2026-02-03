@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 	"strconv"
@@ -8,39 +9,29 @@ import (
 )
 
 func main() {
-	var result string
-	var stackMap = make(map[int][]string)
-
+	part := flag.Int("part", 1, "")
+	flag.Parse()
 	data, _ := os.ReadFile("../../input/05.txt")
 
-	split := strings.Split(string(data), "\n\n")
-	stack := split[0]
-	procedures := split[1]
-
-	// build stackMap
-	stackRows := strings.Split(stack, "\n")
-	stackRowsCount := len(stackRows)
-	for i := 1; i <= stackRowsCount-1; i++ {
-		items := strings.Split(stackRows[stackRowsCount-1-i], " ")
-		for j, col := 0, 1; j < len(items); col++ {
-			if items[j] == "" {
-				j += 4
-				continue
-			}
-			stackMap[col] = append(stackMap[col], strings.Trim(strings.Trim(items[j], "["), "]"))
-			j += 1
-		}
+	if *part == 2 {
+		fmt.Println(part2(string(data)))
+	} else {
+		fmt.Println(part1(string(data)))
 	}
+}
 
-	for _, p := range strings.Split(strings.TrimSpace(procedures), "\n") {
-		splitProc := strings.Split(p, " ")
-		move, _ := strconv.Atoi(splitProc[1])
-		from, _ := strconv.Atoi(splitProc[3])
-		to, _ := strconv.Atoi(splitProc[5])
+func part1(input string) string {
+	split := strings.Split(input, "\n\n")
+	stackMap := makeStackMap(split[0])
+	procedures := strings.Split(strings.TrimSpace(split[1]), "\n")
 
+	for i := range procedures {
+		fields := strings.Fields(procedures[i])
+		move, _ := strconv.Atoi(fields[1])
+		from, _ := strconv.Atoi(fields[3])
+		to, _ := strconv.Atoi(fields[5])
 		moving := stackMap[from][len(stackMap[from])-move : len(stackMap[from])]
 
-		// reverse moving for part 1 answer. comment for part 2 answer.
 		for i, j := 0, len(moving)-1; i < j; i, j = i+1, j-1 {
 			moving[i], moving[j] = moving[j], moving[i]
 		}
@@ -49,9 +40,50 @@ func main() {
 		stackMap[from] = stackMap[from][:len(stackMap[from])-move]
 	}
 
-	for k := 1; k <= len(stackMap); k++ {
-		result += stackMap[k][len(stackMap[k])-1]
+	return buildResult(stackMap)
+}
+
+func part2(input string) string {
+	split := strings.Split(input, "\n\n")
+	stackMap := makeStackMap(split[0])
+	procedures := strings.Split(strings.TrimSpace(split[1]), "\n")
+
+	for i := range procedures {
+		fields := strings.Fields(procedures[i])
+		move, _ := strconv.Atoi(fields[1])
+		from, _ := strconv.Atoi(fields[3])
+		to, _ := strconv.Atoi(fields[5])
+		moving := stackMap[from][len(stackMap[from])-move : len(stackMap[from])]
+		stackMap[to] = append(stackMap[to], moving...)
+		stackMap[from] = stackMap[from][:len(stackMap[from])-move]
 	}
 
-	fmt.Println("result: ", result)
+	return buildResult(stackMap)
+}
+
+func buildResult(m map[int][]string) string {
+	var res []string
+	for k := 1; k <= len(m); k++ {
+		res = append(res, m[k][len(m[k])-1])
+	}
+	return strings.Join(res, "")
+}
+
+func makeStackMap(data string) map[int][]string {
+	m := make(map[int][]string)
+	rows := strings.Split(data, "\n")
+	rowsCount := len(rows)
+	for i := 1; i <= rowsCount-1; i++ {
+		items := strings.Split(rows[rowsCount-1-i], " ")
+		for j, col := 0, 1; j < len(items); col++ {
+			if items[j] == "" {
+				j += 4
+				continue
+			}
+			m[col] = append(m[col], string(items[j][1]))
+			j += 1
+		}
+	}
+
+	return m
 }

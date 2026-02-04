@@ -22,36 +22,26 @@ func main() {
 }
 
 func part1(input string) string {
-	split := strings.Split(input, "\n\n")
-	stackMap := makeStackMap(split[0])
-	procedures := strings.Split(strings.TrimSpace(split[1]), "\n")
-
-	for i := range procedures {
-		fields := strings.Fields(procedures[i])
-		move, _ := strconv.Atoi(fields[1])
-		from, _ := strconv.Atoi(fields[3])
-		to, _ := strconv.Atoi(fields[5])
-		moving := stackMap[from][len(stackMap[from])-move : len(stackMap[from])]
-
-		slices.Reverse(moving)
-		stackMap[to] = append(stackMap[to], moving...)
-		stackMap[from] = stackMap[from][:len(stackMap[from])-move]
-	}
-
-	return buildResult(stackMap)
+	return processInput(input, true)
 }
 
 func part2(input string) string {
+	return processInput(input, false)
+}
+
+func processInput(input string, doReverse bool) string {
 	split := strings.Split(input, "\n\n")
 	stackMap := makeStackMap(split[0])
 	procedures := strings.Split(strings.TrimSpace(split[1]), "\n")
-
 	for i := range procedures {
 		fields := strings.Fields(procedures[i])
 		move, _ := strconv.Atoi(fields[1])
 		from, _ := strconv.Atoi(fields[3])
 		to, _ := strconv.Atoi(fields[5])
 		moving := stackMap[from][len(stackMap[from])-move : len(stackMap[from])]
+		if doReverse {
+			slices.Reverse(moving)
+		}
 		stackMap[to] = append(stackMap[to], moving...)
 		stackMap[from] = stackMap[from][:len(stackMap[from])-move]
 	}

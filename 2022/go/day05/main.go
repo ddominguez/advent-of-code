@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -32,10 +33,7 @@ func part1(input string) string {
 		to, _ := strconv.Atoi(fields[5])
 		moving := stackMap[from][len(stackMap[from])-move : len(stackMap[from])]
 
-		for i, j := 0, len(moving)-1; i < j; i, j = i+1, j-1 {
-			moving[i], moving[j] = moving[j], moving[i]
-		}
-
+		slices.Reverse(moving)
 		stackMap[to] = append(stackMap[to], moving...)
 		stackMap[from] = stackMap[from][:len(stackMap[from])-move]
 	}
@@ -72,18 +70,13 @@ func buildResult(m map[int][]string) string {
 func makeStackMap(data string) map[int][]string {
 	m := make(map[int][]string)
 	rows := strings.Split(data, "\n")
-	rowsCount := len(rows)
-	for i := 1; i <= rowsCount-1; i++ {
-		items := strings.Split(rows[rowsCount-1-i], " ")
-		for j, col := 0, 1; j < len(items); col++ {
-			if items[j] == "" {
-				j += 4
-				continue
+	for i := len(rows) - 2; i >= 0; i-- {
+		for j, col := 1, 1; j < len(rows[i]); j += 4 {
+			if rows[i][j] >= 'A' && rows[i][j] <= 'Z' {
+				m[col] = append(m[col], string(rows[i][j]))
 			}
-			m[col] = append(m[col], string(items[j][1]))
-			j += 1
+			col += 1
 		}
 	}
-
 	return m
 }

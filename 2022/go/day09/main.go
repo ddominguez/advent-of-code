@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 	"strconv"
@@ -19,61 +20,55 @@ var movingPoints = map[string]point{
 	"D": {x: 0, y: -1},
 }
 
-var touchingPoints = []point{
-	// same
-	{x: 0, y: 0},
-	// above
-	{x: 0, y: 1},
-	// below
-	{x: 0, y: -1},
-	// right
-	{x: 1, y: 0},
-	// left
-	{x: -1, y: 0},
-	// right top
-	{x: 1, y: 1},
-	// right bottom
-	{x: 1, y: -1},
-	// left top
-	{x: -1, y: 1},
-	// left bottom
-	{x: -1, y: -1},
-}
-
-// isTouching will return true if the tail is touching the head
-// will return false if not touching
-func isTouching(h, t point) bool {
-	for _, tp := range touchingPoints {
-		if t.x == h.x-tp.x && t.y == h.y-tp.y {
-			return true
-		}
+func abs(a int32) int32 {
+	if a < 0 {
+		return -a
 	}
-	return false
+	return a
 }
 
-func visitKey(t point) string {
-	return fmt.Sprintf("%d,%d", t.x, t.y)
+func isTouching(h, t point) bool {
+	x := abs(h.x - t.x)
+	y := abs(h.y - t.y)
+	return x <= 1 && y <= 1
 }
 
 func main() {
+	part := flag.Int("part", 1, "")
+	flag.Parse()
 	data, _ := os.ReadFile("../../input/09.txt")
 
-	tailVisited := make(map[string]int)
+	if *part == 2 {
+		fmt.Println(part2(string(data)))
+	} else {
+		fmt.Println(part1(string(data)))
+	}
+}
 
-	lines := strings.Split(strings.TrimSpace(string(data)), "\n")
+func part1(input string) int {
+	motions := strings.Split(strings.TrimSpace(input), "\n")
+	knots := 2
+	return positionsVisited(motions, knots)
+}
 
-	knotsCount := 2 // part 1
-	// knotsCount := 10 // part 2
-	knotsList := make([]point, knotsCount)
+func part2(input string) int {
+	motions := strings.Split(strings.TrimSpace(input), "\n")
+	knots := 10
+	return positionsVisited(motions, knots)
+}
+
+func positionsVisited(motions []string, knots int) int {
+	visited := make(map[point]struct{})
+	knotsList := make([]point, knots)
 	lastKnotIndex := len(knotsList) - 1
-	tailVisited[visitKey(knotsList[lastKnotIndex])] = 1
+	visited[knotsList[lastKnotIndex]] = struct{}{}
 
-	for i := range lines {
-		split := strings.Split(lines[i], " ")
+	for i := range motions {
+		split := strings.Fields(motions[i])
 		direction := split[0]
 		steps, _ := strconv.Atoi(split[1])
 
-		for step := 0; step < steps; step++ {
+		for range steps {
 			for k := range knotsList {
 				if k == 0 {
 					knotsList[k].x += movingPoints[direction].x
@@ -94,12 +89,12 @@ func main() {
 						knotsList[k].y -= 1
 					}
 					if k == lastKnotIndex {
-						tailVisited[visitKey(knotsList[k])] += 1
+						visited[knotsList[k]] = struct{}{}
 					}
 				}
 			}
 		}
 	}
 
-	fmt.Println("total visited:", len(tailVisited))
+	return len(visited)
 }

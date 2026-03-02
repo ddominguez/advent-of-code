@@ -41,10 +41,7 @@ impl Direction {
 
 fn main() {
     let day = 1;
-    let input = get_input_lines(day)
-        .next()
-        .expect("No input lines")
-        .expect("Failed to read line");
+    let input = get_input_lines(day);
     for arg in std::env::args().skip(1) {
         match arg.as_str() {
             "-part1" => println!("{}", part1(&input)),

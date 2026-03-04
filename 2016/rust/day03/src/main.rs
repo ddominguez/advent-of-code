@@ -35,14 +35,12 @@ fn part1(input: &str) -> i32 {
 
 fn part2(input: &str) -> i32 {
     let mut res = 0;
-    let mut count = 0;
     let mut group: Vec<Vec<i32>> = Vec::new();
     const GROUP_SIZE: usize = 3;
     for line in input.lines() {
-        count += 1;
         let sides = get_sides(line);
         group.push(sides);
-        if count % GROUP_SIZE == 0 {
+        if group.len() == GROUP_SIZE {
             let zipped: Vec<(i32, i32, i32)> = group[0]
                 .iter()
                 .zip(group[1].iter())

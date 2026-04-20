@@ -67,6 +67,6 @@ if __name__ == "__main__":
         data = f.read().strip()
 
     if sys.argv[1] == "part2":
-        print(part1(data))
-    else:
         print(part2(data))
+    else:
+        print(part1(data))

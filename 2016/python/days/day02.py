@@ -71,7 +71,7 @@ if __name__ == "__main__":
     with open("../input/02.txt") as f:
         data = f.read().strip()
 
-    if sys.argv[1] == "part2":
+    if len(sys.argv) > 1 and sys.argv[1] == "part2":
         print(part2(data))
     else:
         print(part1(data))

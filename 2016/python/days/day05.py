@@ -14,6 +14,7 @@ def part1(data: str) -> str:
             passwd_chars.append(hash[5])
             search_count += 1
         index += 1
+
     return "".join(passwd_chars)
 
 
@@ -34,8 +35,8 @@ def part2(data: str) -> str:
                 if pos < passwd_len and passwd_chars[pos] == "":
                     passwd_chars[pos] = hash[6]
                     search_count += 1
-
         index += 1
+
     return "".join(passwd_chars)
 
 

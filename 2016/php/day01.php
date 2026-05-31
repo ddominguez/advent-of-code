@@ -1,5 +1,7 @@
-<?
+<?php
 declare(strict_types=1);
+
+require 'aoc.php';
 
 enum Direction: int {
     case North = 0;
@@ -79,15 +81,6 @@ function part2(string $contents): int {
     return abs($position[0]) + abs($position[1]);
 }
 
-function expect(mixed $actual, mixed $expected, string $func_name): void {
-    echo "testing $func_name";
-    if ($actual === $expected) {
-        echo "...OK\n";
-    } else {
-        echo "...FAIL - expected $expected, got $actual\n";
-    }
-}
-
 function test_part1(): void {
     $input = 'R2, L3';
     expect(part1($input), 5, __FUNCTION__);
@@ -98,23 +91,13 @@ function test_part2(): void {
     expect(part2($input), 4, __FUNCTION__);
 }
 
-function main(array $args): void {
-    $contents = trim(file_get_contents('../input/01.txt'));
-    switch($args[1] ?? 'part1') {
-        case 'part1':
-            echo part1($contents)."\n";
-            break;
-        case 'part2':
-            echo part2($contents)."\n";
-            break;
-        case 'test':
-            test_part1();
-            test_part2();
-            break;
-        default:
-            echo "Unknown command: $args[1]\n";
-            break;
-    }
-}
-
-main($argv);
+main([
+    'cmd'=> $argv[1] ?? 'part1',
+    'day'=> 1,
+    'part1'=> 'part1',
+    'part2'=> 'part2',
+    'tests'=> function() {
+        test_part1();
+        test_part2();
+    },
+]);
